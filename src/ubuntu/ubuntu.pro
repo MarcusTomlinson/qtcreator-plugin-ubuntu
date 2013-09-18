@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = Ubuntu
 DEFINES += UBUNTU_LIBRARY
 
-QT += network qml quick webkitwidgets script scripttools
+QT += network qml quick webkitwidgets script scripttools declarative
 
 PROVIDER = Canonical
 
@@ -25,11 +25,35 @@ LIBS += -L$$[QT_INSTALL_LIBS]/qtcreator
 LIBS += -L$$[QT_INSTALL_LIBS]/qtcreator/plugins/QtProject
 
 #####################################
+# required for Ubuntu Device Notifier
+CONFIG += link_pkgconfig
+
+PKGCONFIG += libudev
+#####################################
+
+#####################################
 ## Project files
-SOURCES   += ubuntuplugin.cpp \
-             ubuntuwelcomemode.cpp \
-             ubuntuprojectapplicationwizard.cpp \
-             ubuntumenu.cpp \
+
+FORMS += \
+    ubuntudeviceswidget.ui \
+    ubuntupackagingwidget.ui \
+    ubuntusettingswidget.ui \
+    ubuntusecuritypolicypickerdialog.ui
+
+RESOURCES += \
+    resources.qrc
+
+OTHER_FILES += \
+    UbuntuProject.mimetypes.xml \
+    manifest.json.template \
+    myapp.json.template \
+    manifestlib.js
+
+SOURCES += \
+    ubuntuplugin.cpp \
+    ubuntuwelcomemode.cpp \
+    ubuntuprojectapplicationwizard.cpp \
+    ubuntumenu.cpp \
     ubuntuprojectmanager.cpp \
     ubuntuproject.cpp \
     ubuntuprojectfile.cpp \
@@ -51,15 +75,25 @@ SOURCES   += ubuntuplugin.cpp \
     ubuntubzr.cpp \
     ubuntuclickmanifest.cpp \
     ubuntuwebmode.cpp \
-    ubuntupastebinmode.cpp
+    ubuntupastebinmode.cpp \
+    ubuntudeviceswidget.cpp \
+    ubuntudevicemode.cpp \
+    ubuntuprocess.cpp \
+    ubuntudevicenotifier.cpp \
+    ubuntusettingspage.cpp \
+    ubuntusettingswidget.cpp \
+    ubuntusecuritypolicypickerdialog.cpp \
+    ubuntupolicygroupmodel.cpp \
+    ubuntupolicygroupinfo.cpp
 
-HEADERS   += ubuntuplugin.h \
-             ubuntu_global.h \
-             ubuntuconstants.h \
-             ubuntuwelcomemode.h \
-             ubuntuprojectapplicationwizard.h \
-             ubuntumenu.h \
-             ubuntushared.h \
+HEADERS += \
+    ubuntuplugin.h \
+    ubuntu_global.h \
+    ubuntuconstants.h \
+    ubuntuwelcomemode.h \
+    ubuntuprojectapplicationwizard.h \
+    ubuntumenu.h \
+    ubuntushared.h \
     ubuntuprojectmanager.h \
     ubuntuproject.h \
     ubuntuprojectfile.h \
@@ -81,34 +115,14 @@ HEADERS   += ubuntuplugin.h \
     ubuntubzr.h \
     ubuntuclickmanifest.h \
     ubuntuwebmode.h \
-    ubuntupastebinmode.h
+    ubuntupastebinmode.h \
+    ubuntudevicemode.h \
+    ubuntudeviceswidget.h \
+    ubuntuprocess.h \
+    ubuntudevicenotifier.h \
+    ubuntusettingspage.h \
+    ubuntusettingswidget.h \
+    ubuntusecuritypolicypickerdialog.h \
+    ubuntupolicygroupmodel.h \
+    ubuntupolicygroupinfo.h
 
-RESOURCES += resources.qrc
-
-HEADERS += \
-    ubuntudevicemode.h
-
-SOURCES += \
-    ubuntudevicemode.cpp
-
-HEADERS += \
-    ubuntudeviceswidget.h
-
-SOURCES += \
-    ubuntudeviceswidget.cpp
-
-FORMS += \
-    ubuntudeviceswidget.ui \
-    ubuntupackagingwidget.ui
-
-HEADERS += \
-    ubuntuprocess.h
-
-SOURCES += \
-    ubuntuprocess.cpp
-
-OTHER_FILES += \
-    UbuntuProject.mimetypes.xml \
-    manifest.json.template \
-    myapp.json.template \
-    manifestlib.js
