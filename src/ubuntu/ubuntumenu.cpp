@@ -74,7 +74,7 @@ void UbuntuMenu::slotUpdateActions() {
 
     if (startupProject) {
         isQmlProject = (startupProject->projectManager()->mimeType() == QLatin1String("application/x-qmlproject"));
-        isQmakeProject = (startupProject->projectManager()->mimeType() == QLatin1String("application/vnd.qt.qmakeprofile"));
+        isQmakeProject = (startupProject->projectManager()->mimeType() == QLatin1String("application/vnd.nokia.qt.qmakeprofile"));
         isCordovaProject = (startupProject->projectManager()->mimeType() == QLatin1String("application/x-cordovaproject"));
         isUbuntuProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::UBUNTUPROJECT_MIMETYPE));
     }
