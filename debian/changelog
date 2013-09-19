@@ -1,3 +1,10 @@
+qtcreator-plugin-ubuntu (2.7.2-0ubuntu4) UNRELEASED; urgency=low
+
+  * If no device is present, try to use the system package to
+    detect security policy groups, else, manual entry (LP: #1227618)
+
+ -- Juhapekka Piiroinen <juhapekka.piiroinen@canonical.com>  Thu, 19 Sep 2013 16:23:02 +0300
+
 qtcreator-plugin-ubuntu (2.7.2-0ubuntu3) saucy; urgency=low
 
   * USB Device connection / disconnection detection.
