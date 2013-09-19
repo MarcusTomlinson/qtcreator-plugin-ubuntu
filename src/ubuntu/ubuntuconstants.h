@@ -109,6 +109,7 @@ const char UBUNTU_ACTION_PROJECTFILES[] = "%PROJECTFILES%";
 const char UBUNTU_ACTION_SCRIPTDIRECTORY[] = "%SCRIPTDIRECTORY%";
 const char UBUNTU_ACTION_SHAREDIRECTORY[] = "%SHAREDIRECTORY%";
 const char UBUNTU_ACTION_SERIALNUMBER[] = "%SERIALNUMBER%";
+const char UBUNTU_ACTION_BZR_USERNAME[] = "%BZR_USERNAME%";
 
 const char UBUNTU_FILENAME_DISPLAYNAME[] = "displayName";
 const char UBUNTU_FILENAME_DISPLAYNAME_LOWER[] = "displayName_lower";
@@ -178,6 +179,8 @@ const char PLATFORM_DESKTOP[] = "Desktop";
 const char PLATFORM_DESKTOP_DISPLAYNAME[] = "Ubuntu %0";
 
 const char TASK_DEVICE_SCRIPT[] = "Ubuntu.Task.DeviceScript";
+
+const char UBUNTU_SETTINGS_ICON[] = ":/ubuntu/images/ubuntu-32.png";
 
 } // namespace Ubuntu
 } // namespace Constants
