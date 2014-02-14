@@ -33,6 +33,7 @@
 #include "ubuntuapimode.h"
 #include "ubuntucoreappsmode.h"
 #include "ubuntuwikimode.h"
+#include "ubuntuhtml5devtools.h"
 #include "ubuntupackagingmode.h"
 #include "ubuntupastebinmode.h"
 #include "ubuntusettingspage.h"
@@ -71,6 +72,7 @@ protected:
     UbuntuPackagingMode*    m_ubuntuPackagingMode;
     UbuntuPastebinMode*     m_ubuntuPastebinMode;
     UbuntuClickManager*     m_ubuntuClickManager;
+    UbuntuHTML5DevTools*    m_ubuntuHTML5DevTools;
 };
 
 

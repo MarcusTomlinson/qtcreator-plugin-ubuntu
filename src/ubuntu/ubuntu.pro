@@ -52,6 +52,7 @@ SOURCES += \
     ubuntuapimode.cpp \
     ubuntucoreappsmode.cpp \
     ubuntuwikimode.cpp \
+    ubuntuhtml5devtools.cpp \
     ubuntupackagingmode.cpp \
     ubuntupackagingwidget.cpp \
     ubuntubzr.cpp \
@@ -99,6 +100,7 @@ HEADERS += \
     ubuntuapimode.h \
     ubuntucoreappsmode.h \
     ubuntuwikimode.h \
+    ubuntuhtml5devtools.h \
     ubuntupackagingmode.h \
     ubuntupackagingwidget.h \
     ubuntubzr.h \

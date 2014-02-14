@@ -343,6 +343,10 @@ const char  UBUNTU_COREAPPS[] = "https://launchpad.net/ubuntu-phone-coreapps/";
 const char  UBUNTU_WIKI[] = "https://wiki.ubuntu.com/Touch";
 const char  UBUNTU_PASTEBIN[] = "http://pastebin.ubuntu.com";
 
+const char  UBUNTU_HTML5DEVTOOLS[] = "UbuntuHTML5DevTools";
+const char  UBUNTU_HTML5DEVTOOLS_DISPLAYNAME[] = "HTML5 DevTools";
+const char  HTML5_DEVTOOLS[] = "http://192.168.1.13:9221";
+
 const char  FEATURE_UNITY_SCOPE[] = "Ubuntu.Wizards.FeatureUnityScope";
 const char  FEATURE_UBUNTU_PRECISE[] = "Ubuntu.Wizards.FeatureUbuntuPrecise";
 const char  FEATURE_UBUNTU_QUANTAL[] = "Ubuntu.Wizards.FeatureUbuntuQuantal";
@@ -396,6 +400,7 @@ const char  SETTINGS_KEY_IP[] = "IP";
 const char  SETTINGS_KEY_QML[] = "QML";
 const char  SETTINGS_KEY_SSH[] = "SSH";
 const char  SETTINGS_KEY_AUTOTOGGLE[] = "Auto_Toggle";
+const char  SETTINGS_KEY_HTML5DEVTOOLS[] = "HTML5_DevTools";
 
 const char  SETTINGS_GROUP_CLICK[] = "Click";
 const char  SETTINGS_KEY_CLICK_REVIEWERSTOOLS[] = "ReviewersToolsEnabled";
