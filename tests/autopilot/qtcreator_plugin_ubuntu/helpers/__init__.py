@@ -5,4 +5,8 @@
 # under the terms of the GNU General Public License version 3, as published
 # by the Free Software Foundation.
 
-"""qtcreator-plugin-ubuntu autopilot tests top level package."""
+"""qtcreator-plugin-ubuntu autopilot helpers top level package."""
+
+__all__ = ["FancyTabBar"]
+
+from qtcreator_plugin_ubuntu.helpers.tabbar import FancyTabBar
