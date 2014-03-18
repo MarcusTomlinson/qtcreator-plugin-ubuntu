@@ -32,6 +32,5 @@ class QtCreatorSideMenuTests(AutopilotTestCase):
     def test_can_enable_IRC_mode(self):
         app_proxy = self.launch_test_application("qtcreator")
         tabbar = FancyTabBar(app_proxy)
-        import ipdb; ipdb.set_trace()
 
         tabbar.activate_plugin_tab("IRC")
