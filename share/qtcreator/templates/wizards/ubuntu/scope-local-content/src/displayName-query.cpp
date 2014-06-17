@@ -1,5 +1,4 @@
 #include "%DISPLAYNAME%-query.h"
-#include <unity/scopes/Annotation.h>
 #include <unity/scopes/CategorisedResult.h>
 #include <unity/scopes/CategoryRenderer.h>
 #include <unity/scopes/QueryBase.h>
@@ -30,10 +29,4 @@ void %DISPLAYNAME_CAPITAL%Query::run(unity::scopes::SearchReplyProxy const& repl
     res.set_art("icon");
     res.set_dnd_uri("dnd_uri");
     reply->push(res);
-
-    CannedQuery q("scope-A", query_, "");
-    Annotation annotation(Annotation::Type::Link);
-    annotation.add_link("More...", q);
-    reply->register_annotation(annotation);
-
 }
