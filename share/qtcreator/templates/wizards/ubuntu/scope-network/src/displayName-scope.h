@@ -14,11 +14,11 @@ public:
 
     virtual void stop() override;
 
-    unity::scopes::PreviewQueryBase::UPtr preview(const unity::scopes::Result&,
-            const unity::scopes::ActionMetadata&) override;
+    unity::scopes::PreviewQueryBase::UPtr preview(unity::scopes::Result const& result,
+            unity::scopes::ActionMetadata const& metadata) override;
 
     virtual unity::scopes::SearchQueryBase::UPtr search(unity::scopes::CannedQuery const& q,
-            unity::scopes::SearchMetadata const&) override;
+            unity::scopes::SearchMetadata const& metadata) override;
 };
 
 #endif

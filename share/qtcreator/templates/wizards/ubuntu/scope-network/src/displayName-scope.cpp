@@ -5,7 +5,7 @@
 
 using namespace unity::scopes;
 
-int %DISPLAYNAME_CAPITAL%Scope::start(std::string const&, unity::scopes::RegistryProxy const&)
+int %DISPLAYNAME_CAPITAL%Scope::start(std::string const&, RegistryProxy const&)
 {
     return VERSION;
 }
@@ -14,15 +14,14 @@ void %DISPLAYNAME_CAPITAL%Scope::stop()
 {
 }
 
-SearchQueryBase::UPtr %DISPLAYNAME_CAPITAL%Scope::search(unity::scopes::CannedQuery const &q,
-        unity::scopes::SearchMetadata const&)
+SearchQueryBase::UPtr %DISPLAYNAME_CAPITAL%Scope::search(CannedQuery const &q, SearchMetadata const& metadata)
 {
-    unity::scopes::SearchQueryBase::UPtr query(new %DISPLAYNAME_CAPITAL%Query(q.query_string()));
+    SearchQueryBase::UPtr query(new %DISPLAYNAME_CAPITAL%Query(q, metadata));
     return query;
 }
 
-PreviewQueryBase::UPtr %DISPLAYNAME_CAPITAL%Scope::preview(Result const& result, ActionMetadata const& /*metadata*/) {
-    unity::scopes::PreviewQueryBase::UPtr preview(new %DISPLAYNAME_CAPITAL%Preview(result.uri()));
+PreviewQueryBase::UPtr %DISPLAYNAME_CAPITAL%Scope::preview(Result const& result, ActionMetadata const& metadata) {
+    PreviewQueryBase::UPtr preview(new %DISPLAYNAME_CAPITAL%Preview(result, metadata));
     return preview;
 }
 

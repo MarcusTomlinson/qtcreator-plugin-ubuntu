@@ -6,7 +6,8 @@
 
 using namespace unity::scopes;
 
-%DISPLAYNAME_CAPITAL%Preview::%DISPLAYNAME_CAPITAL%Preview(std::string const& uri) : uri_(uri)
+%DISPLAYNAME_CAPITAL%Preview::%DISPLAYNAME_CAPITAL%Preview(Result const& result, ActionMetadata const& metadata) :
+    PreviewQueryBase(result, metadata)
 {
 }
 
@@ -18,7 +19,7 @@ void %DISPLAYNAME_CAPITAL%Preview::cancelled()
 {
 }
 
-void %DISPLAYNAME_CAPITAL%Preview::run(unity::scopes::PreviewReplyProxy const& reply)
+void %DISPLAYNAME_CAPITAL%Preview::run(PreviewReplyProxy const& reply)
 {
     PreviewWidgetList widgets;
     widgets.emplace_back(PreviewWidget(R"({"id": "header", "type": "header", "components" : { "title": "title", "subtitle": "author" } })"));

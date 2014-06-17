@@ -6,14 +6,11 @@
 class %DISPLAYNAME_CAPITAL%Preview : public unity::scopes::PreviewQueryBase
 {
 public:
-    %DISPLAYNAME_CAPITAL%Preview(std::string const& uri);
+    %DISPLAYNAME_CAPITAL%Preview(unity::scopes::Result const& result, unity::scopes::ActionMetadata const& metadata);
     ~%DISPLAYNAME_CAPITAL%Preview();
 
     virtual void cancelled() override;
     virtual void run(unity::scopes::PreviewReplyProxy const& reply) override;
-
-private:
-    std::string uri_;
 };
 
 #endif

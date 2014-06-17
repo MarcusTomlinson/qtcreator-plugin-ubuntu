@@ -6,7 +6,8 @@
 
 using namespace unity::scopes;
 
-%DISPLAYNAME_CAPITAL%Preview::%DISPLAYNAME_CAPITAL%Preview(std::string const& uri) : uri_(uri)
+%DISPLAYNAME_CAPITAL%Preview::%DISPLAYNAME_CAPITAL%Preview(Result const& result, ActionMetadata const& metadata) :
+    PreviewQueryBase(result, metadata)
 {
 }
 
