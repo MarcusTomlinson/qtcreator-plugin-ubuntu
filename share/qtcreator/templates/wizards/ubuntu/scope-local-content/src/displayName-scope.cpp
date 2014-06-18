@@ -5,9 +5,8 @@
 
 using namespace unity::scopes;
 
-int %DISPLAYNAME_CAPITAL%Scope::start(std::string const&, RegistryProxy const&)
+void %DISPLAYNAME_CAPITAL%Scope::start(std::string const&, RegistryProxy const&)
 {
-    return VERSION;
 }
 
 void %DISPLAYNAME_CAPITAL%Scope::stop()
