@@ -7,7 +7,7 @@
 class %DISPLAYNAME_CAPITAL%Query : public unity::scopes::SearchQueryBase
 {
 public:
-    %DISPLAYNAME_CAPITAL%Query(std::string const& query);
+    %DISPLAYNAME_CAPITAL%Query(unity::scopes::CannedQuery const& query, unity::scopes::SearchMetadata const& metadata);
     ~%DISPLAYNAME_CAPITAL%Query();
     virtual void cancelled() override;
 
