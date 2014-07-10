@@ -5,11 +5,11 @@
 # - publish the generated click package at
 #   https://myapps.developer.ubuntu.com/dev/click-apps/
 #
-# More details on http://developer.ubuntu.com/publish/webapp/
+# More details on http://developer.ubuntu.com/publish/webapp/ and  http://developer.ubuntu.com/web/guides/ubuntu-webapps-guide/
 [Desktop Entry]
 Name=%ProjectName%
 Type=Application
 Icon=app.png
-Exec=webapp-container --enable-back-forward --store-session-cookies --webappUrlPatterns=https?://m.%ProjectName%.com/* http://m.%ProjectName%.com
+Exec=webapp-container --enable-back-forward --store-session-cookies --webappUrlPatterns=https?://m.%ProjectName%.com/* http://m.%ProjectName%.com %u
 Terminal=false
 X-Ubuntu-Touch=true
