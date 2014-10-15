@@ -6,7 +6,7 @@
     <displaycategory>Ubuntu</displaycategory>
     <files>
 	<file source="../share/manifest.json"   target="manifest.json" openeditor="true"/>
-        <file source="displayName.ubuntuwebappproject" target="%ProjectName%.webappproject" openproject="true"/>
+        <file source="displayName.ubuntuwebappproject" target="%ProjectName%.ubuntuwebappproject" openproject="true"/>
 	<file source="displayName.apparmor"   target="%ClickHookName%.apparmor" openeditor="false"/>
 	<file source="displayName.png"   target="%ProjectName%.png" openeditor="false" binary="true"/>
 	<file source="displayName.desktop"   target="%ClickHookName%.desktop" openeditor="true"/>
