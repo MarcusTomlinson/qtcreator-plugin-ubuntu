@@ -139,7 +139,7 @@ bool UbuntuPackageStep::init()
 
             params->resolveAll();
         } else {
-            //QML and HTML projects are just rsynced for now
+            //QML, HTML & WebApp projects are just rsynced for now
             QStringList arguments;
             arguments << QStringLiteral("-avh")
                       << QStringLiteral("--delete")
@@ -152,7 +152,8 @@ bool UbuntuPackageStep::init()
                       << QStringLiteral("--exclude")<<QStringLiteral("tests")
                       << QStringLiteral("--exclude")<<QStringLiteral("Makefile")
                       << QStringLiteral("--exclude")<<QStringLiteral(".excludes")
-                      << QStringLiteral("--exclude")<<QStringLiteral("*.ubuntuhtmlproject");
+                      << QStringLiteral("--exclude")<<QStringLiteral("*.ubuntuhtmlproject")
+                      << QStringLiteral("--exclude")<<QStringLiteral("*.ubuntuwebappproject");
 
             QFile excludes (projectDir+QDir::separator()+QStringLiteral(".excludes"));
             if (excludes.open(QIODevice::ReadOnly)) {

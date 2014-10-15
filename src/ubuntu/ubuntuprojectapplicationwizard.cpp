@@ -281,7 +281,7 @@ void UbuntuProjectApplicationWizardDialog::generateProfileName(const QString &pr
         m_targetSetupPage->setProjectPath(path+QDir::separator()
                                           +projectName
                                           +QDir::separator()
-                                          +QString::fromLatin1("%1.webappproject").arg(projectName));
+                                          +QString::fromLatin1("%1.ubuntuwebappproject").arg(projectName));
     } else {
         m_targetSetupPage->setProjectPath(path+QDir::separator()+projectName+QDir::separator()+QLatin1String("CMakeLists.txt"));
     }

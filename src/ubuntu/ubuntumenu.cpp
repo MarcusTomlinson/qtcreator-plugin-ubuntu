@@ -104,14 +104,16 @@ void UbuntuMenu::slotUpdateActions() {
     bool isQmakeProject = false;
     bool isUbuntuProject = false;
     bool isUbuntuHtmlProject = false;
+    bool isUbuntuWebappProject = false;
     bool isClickTarget = false;
 
     if (startupProject) {
         isQmlProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::QMLPROJECT_MIMETYPE));
         isQmakeProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::QMAKE_MIMETYPE));
         isUbuntuProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::UBUNTUPROJECT_MIMETYPE));
+        isUbuntuWebappProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::WEBAPP_PROJECT_MIMETYPE));
         isUbuntuHtmlProject = isProperUbuntuHtmlProject(startupProject);
-        isUbuntuProject = isUbuntuProject || isUbuntuHtmlProject || isQmlProject;
+        isUbuntuProject = isUbuntuProject || isUbuntuHtmlProject || isQmlProject || isUbuntuWebappProject;
         isClickTarget = startupProject->activeTarget()
                 && startupProject->activeTarget()->kit()
                 && ProjectExplorer::ToolChainKitInformation::toolChain(startupProject->activeTarget()->kit())
@@ -129,10 +131,12 @@ void UbuntuMenu::slotUpdateActions() {
         bool requiresQmakeProject = act->property(Constants::UBUNTU_MENUJSON_QMAKEPROJECTREQUIRED).toBool();
         bool requiresUbuntuProject = act->property(Constants::UBUNTU_MENUJSON_UBUNTUPROJECTREQUIRED).toBool();
         bool requiresUbuntuHtmlProject = act->property(Constants::UBUNTU_MENUJSON_UBUNTUHTMLPROJECTREQUIRED).toBool();
+        bool requiresUbuntuWebappProject = act->property(Constants::UBUNTU_MENUJSON_UBUNTUWEBAPPPROJECTREQUIRED).toBool();
         bool requiresClickToolchain = act->property(Constants::UBUNTU_MENUJSON_CLICKTOOLCHAINREQUIRED).toBool();
         bool actionEnabled = ( (requiresQmakeProject ? isQmakeProject : true) &&
                                (requiresQmlProject ? isQmlProject : true) &&
                                (requiresUbuntuHtmlProject ? isUbuntuHtmlProject : true) &&
+			       (requiresUbuntuWebappProject ? isUbuntuWebappProject : true) &&
                                (requiresDevice ? deviceDetected : true) &&
                                (requiresProject ? projectOpen : true) &&
                                (requiresUbuntuProject ? isUbuntuProject : true) &&
@@ -279,6 +283,7 @@ void UbuntuMenu::parseMenu(QJsonObject obj, Core::ActionContainer*& parent, cons
         bool actionQmakeProjectRequired = false;
         bool actionUbuntuProjectRequired = false;
         bool actionUbuntuHtmlProjectRequired = false;
+        bool actionUbuntuWebappProjectRequired = false;
         bool actionSaveRequired = false;
         bool clickTargetRequired = false;
         bool clickToolchainRequired = false;
@@ -312,6 +317,9 @@ void UbuntuMenu::parseMenu(QJsonObject obj, Core::ActionContainer*& parent, cons
         }
         if (obj.contains(QLatin1String(Constants::UBUNTU_MENUJSON_UBUNTUHTMLPROJECTREQUIRED))) {
             actionUbuntuHtmlProjectRequired = obj.value(QLatin1String(Constants::UBUNTU_MENUJSON_UBUNTUHTMLPROJECTREQUIRED)).toBool();
+        }
+        if (obj.contains(QLatin1String(Constants::UBUNTU_MENUJSON_UBUNTUWEBAPPPROJECTREQUIRED))) {
+            actionUbuntuWebappProjectRequired = obj.value(QLatin1String(Constants::UBUNTU_MENUJSON_UBUNTUWEBAPPPROJECTREQUIRED)).toBool();
         }
         if (obj.contains(QLatin1String(Constants::UBUNTU_MENUJSON_SAVEREQUIRED))) {
             actionSaveRequired = obj.value(QLatin1String(Constants::UBUNTU_MENUJSON_SAVEREQUIRED)).toBool();
@@ -362,6 +370,7 @@ void UbuntuMenu::parseMenu(QJsonObject obj, Core::ActionContainer*& parent, cons
         act->setProperty(Constants::UBUNTU_MENUJSON_QMLPROJECTREQUIRED,actionQmlProjectRequired);
         act->setProperty(Constants::UBUNTU_MENUJSON_UBUNTUPROJECTREQUIRED,actionUbuntuProjectRequired);
         act->setProperty(Constants::UBUNTU_MENUJSON_UBUNTUHTMLPROJECTREQUIRED,actionUbuntuHtmlProjectRequired);
+        act->setProperty(Constants::UBUNTU_MENUJSON_UBUNTUWEBAPPPROJECTREQUIRED,actionUbuntuWebappProjectRequired);
         act->setProperty(Constants::UBUNTU_MENUJSON_SAVEREQUIRED,actionSaveRequired);
         act->setProperty(Constants::UBUNTU_MENUJSON_CLICKTARGETREQUIRED,clickTargetRequired);
         act->setProperty(Constants::UBUNTU_MENUJSON_CLICKTOOLCHAINREQUIRED,clickToolchainRequired);

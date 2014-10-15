@@ -168,7 +168,7 @@ const char UBUNTU_QMLPROJECT_TYPE[] = "qmlproject";
 const char UBUNTU_CMAKEPROJECT_TYPE[] = "cmake";
 const char UBUNTU_QTPROJECT_TYPE[] = "pro";
 const char UBUNTU_GOPROJECT_TYPE[] = "goproject";
-const char UBUNTU_WEBAPPPROJECT_TYPE[] = "webappproject";
+const char UBUNTU_WEBAPPPROJECT_TYPE[] = "ubuntuwebappproject";
 const char UBUNTU_QML_TYPE[] = "qml";
 const char UBUNTU_HAS_TESTS[] = "hasTests";
 const char UBUNTU_INITIAL_EMULATOR_NAME[] = "<emulator>";
@@ -283,6 +283,7 @@ const char  UBUNTU_MENUJSON_QMLPROJECTREQUIRED[] = "qmlProjectRequired";
 const char  UBUNTU_MENUJSON_QMAKEPROJECTREQUIRED[] = "qmakeProjectRequired";
 const char  UBUNTU_MENUJSON_UBUNTUPROJECTREQUIRED[] = "ubuntuProjectRequired";
 const char  UBUNTU_MENUJSON_UBUNTUHTMLPROJECTREQUIRED[] = "ubuntuHtmlProjectRequired";
+const char  UBUNTU_MENUJSON_UBUNTUWEBAPPPROJECTREQUIRED[] = "ubuntuWebappProjectRequired";
 const char  UBUNTU_MENUJSON_CLICKTARGETREQUIRED[] = "needsClickTarget"; //will ask the user to choose a click target
 const char  UBUNTU_MENUJSON_CLICKTOOLCHAINREQUIRED[] = "needsClickToolchain"; //requires a click toolchain
 const char  UBUNTU_MENUJSON_SAVEREQUIRED[] = "saveRequired";
@@ -566,10 +567,10 @@ const char GO_SUPPORT_FEATURE[] = "GoLang.GoSupport";
 /*
  * Webapp project constants.
  */
-const char WEBAPP_PROJECT_MIMETYPE[] = "application/x-webappproject";
+const char WEBAPP_PROJECT_MIMETYPE[] = "application/x-ubuntuwebappproject";
 const char WEBAPP_PROJECT_ID[]       = "WebappProjectManager.WebappProject";
 const char WEBAPP_PROJECT_PROJECTCONTEXT[] = "WebappProject.ProjectContext";
-const char WEBAPP_PROJECT_SUFFIX[] = ".webappproject";
+const char WEBAPP_PROJECT_SUFFIX[] = ".ubuntuwebappproject";
 
 const char UBUNTU_GO_BUILD_TARGETS[] = "%GOBUILDTARGETS%";
 
