@@ -108,7 +108,7 @@
                 "id": "Ubuntu.Build.PackageInstall.Html",
                 "workingDirectory": "%0/..",
                 "projectRequired": true,
-                "context": ["UbuntuProject.ProjectContext","QmlProject.ProjectContext"],
+                "context": ["UbuntuProject.ProjectContext","QmlProject.ProjectContext","WebappProject.ProjectContext"],
                 "saveRequired": true,
                 "needsClickToolchain" : true,
                 "actions": [

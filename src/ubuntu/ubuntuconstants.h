@@ -168,6 +168,7 @@ const char UBUNTU_QMLPROJECT_TYPE[] = "qmlproject";
 const char UBUNTU_CMAKEPROJECT_TYPE[] = "cmake";
 const char UBUNTU_QTPROJECT_TYPE[] = "pro";
 const char UBUNTU_GOPROJECT_TYPE[] = "goproject";
+const char UBUNTU_WEBAPPPROJECT_TYPE[] = "webappproject";
 const char UBUNTU_QML_TYPE[] = "qml";
 const char UBUNTU_HAS_TESTS[] = "hasTests";
 const char UBUNTU_INITIAL_EMULATOR_NAME[] = "<emulator>";
@@ -561,6 +562,14 @@ const char GO_BUILDCONFIGURATION_ID[] = "GoLang.Buildconfiguration";
 const char GO_GOSTEP_ID[] = "GoLang.BuildConfiguration.GoStep";
 const char GO_RUNCONFIG_ID[] = "GoLang.GoRunConfiguration";
 const char GO_SUPPORT_FEATURE[] = "GoLang.GoSupport";
+
+/*
+ * Webapp project constants.
+ */
+const char WEBAPP_PROJECT_MIMETYPE[] = "application/x-webappproject";
+const char WEBAPP_PROJECT_ID[]       = "WebappProjectManager.WebappProject";
+const char WEBAPP_PROJECT_PROJECTCONTEXT[] = "WebappProject.ProjectContext";
+const char WEBAPP_PROJECT_SUFFIX[] = ".webappproject";
 
 const char UBUNTU_GO_BUILD_TARGETS[] = "%GOBUILDTARGETS%";
 

@@ -43,8 +43,10 @@ public:
     enum ProjectType{
         UbuntuHTMLProject,
         UbuntuQMLProject,
+        UbuntuWebappProject,
         CMakeProject,
-        GoProject
+        GoProject,
+        WebappProject
     };
 
     UbuntuProjectApplicationWizard(ProjectType type);

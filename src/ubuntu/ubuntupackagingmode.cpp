@@ -94,6 +94,7 @@ void UbuntuPackagingMode::updateModeState() {
     bool isUbuntuProject = false;
     bool isCMakeProject = false;
     bool isGoProject = false;
+    bool isWebappProject = false;
     bool reviewToolsInstalled = m_ubuntuPackagingWidget.reviewToolsInstalled();
 
     if (startupProject) {
@@ -102,9 +103,10 @@ void UbuntuPackagingMode::updateModeState() {
         isUbuntuProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::UBUNTUPROJECT_MIMETYPE));
         isCMakeProject  = (startupProject->projectManager()->mimeType() == QLatin1String(CMakeProjectManager::Constants::CMAKEMIMETYPE));
         isGoProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::GO_PROJECT_MIMETYPE));
+        isWebappProject = (startupProject->projectManager()->mimeType() == QLatin1String(Constants::WEBAPP_PROJECT_MIMETYPE));
     }
 
-    this->setEnabled((isQmlProject || isUbuntuProject || isCMakeProject || isGoProject || reviewToolsInstalled));
+    this->setEnabled((isQmlProject || isUbuntuProject || isCMakeProject || isGoProject || reviewToolsInstalled || isWebappProject));
 }
 
 void UbuntuPackagingMode::on_projectAdded(ProjectExplorer::Project *project) {

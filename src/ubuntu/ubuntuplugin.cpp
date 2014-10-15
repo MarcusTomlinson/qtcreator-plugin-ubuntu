@@ -173,6 +173,10 @@ bool UbuntuPlugin::initialize(const QStringList &arguments, QString *errorString
                 new UbuntuWizardFactory<UbuntuProjectApplicationWizard,UbuntuProjectApplicationWizard::GoProject>(
                     QStringLiteral("ubuntu-project-go"),
                     Core::IWizard::ProjectWizard));
+    addAutoReleasedObject(
+                new UbuntuWizardFactory<UbuntuProjectApplicationWizard,UbuntuProjectApplicationWizard::WebappProject>(
+                    QStringLiteral("ubuntu-project-webapp"),
+                    Core::IWizard::ProjectWizard));
 
     //register Qt version
     addAutoReleasedObject(new Ubuntu::Internal::UbuntuQtVersionFactory);

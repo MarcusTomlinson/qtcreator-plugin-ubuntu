@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=%ClickHookName%
-Comment=webapp for %ProjectName%
+Comment=%ProjectName%
 Type=Application
 Icon=%ProjectName%.png
 Exec=webapp-container --enable-back-forward --store-session-cookies --webappUrlPatterns=https?://m.%ProjectName%.com/* http://m.%ProjectName%.com %u

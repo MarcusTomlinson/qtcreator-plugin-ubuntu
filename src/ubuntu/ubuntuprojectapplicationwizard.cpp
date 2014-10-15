@@ -232,7 +232,8 @@ void UbuntuProjectApplicationWizardDialog::addTargetSetupPage(int id)
             break;
         }
         case UbuntuProjectApplicationWizard::UbuntuQMLProject:
-        case UbuntuProjectApplicationWizard::UbuntuHTMLProject: {
+        case UbuntuProjectApplicationWizard::UbuntuHTMLProject:
+        case UbuntuProjectApplicationWizard::UbuntuWebappProject: {
             m_targetSetupPage->setRequiredKitMatcher(new UbuntuKitMatcher());
             break;
         }
@@ -276,6 +277,11 @@ void UbuntuProjectApplicationWizardDialog::generateProfileName(const QString &pr
                                           +projectName
                                           +QDir::separator()
                                           +QString::fromLatin1("%1.qmlproject").arg(projectName));
+    } else if (m_type == UbuntuProjectApplicationWizard::UbuntuWebappProject) {
+        m_targetSetupPage->setProjectPath(path+QDir::separator()
+                                          +projectName
+                                          +QDir::separator()
+                                          +QString::fromLatin1("%1.webappproject").arg(projectName));
     } else {
         m_targetSetupPage->setProjectPath(path+QDir::separator()+projectName+QDir::separator()+QLatin1String("CMakeLists.txt"));
     }
