@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=%ClickHookName%
+Exec=%ProjectName%
+Icon=%ProjectName%.png
+Terminal=false
+Type=Application
+X-Ubuntu-Touch=true
