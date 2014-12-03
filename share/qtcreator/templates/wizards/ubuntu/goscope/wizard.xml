@@ -15,8 +15,8 @@
   	      target="%ProjectName%.goproject" openeditor="false" openproject="true"/>
 	<file source="displayName.png"
    	      target="%ProjectName%.png" openeditor="false" binary="true"/>
-	<file source="displayName.desktop"
-   	      target="%ClickHookName%.desktop" openeditor="false"/>
+	<file source="displayName.ini"
+   	      target="%ClickHookName%.ini" openeditor="false"/>
 	<file source="src/displayName/main.go"
    	      target="src/%ProjectName%/main.go" openeditor="true"/>
 	<file source="manifest.json"
