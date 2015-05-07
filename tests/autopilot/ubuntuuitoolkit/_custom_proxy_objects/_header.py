@@ -65,8 +65,8 @@ class AppHeader(_common.UbuntuUIToolkitCustomProxyObjectBase):
             return
 
         # Wait showing/hiding animation of the header.
-        self.moving.wait_for(False)
-
+        if hasattr(self, 'moving'):
+            self.moving.wait_for(False)
     @autopilot_logging.log_action(logger.info)
     def switch_to_section_by_index(self, index):
         """Select a section in the header divider
