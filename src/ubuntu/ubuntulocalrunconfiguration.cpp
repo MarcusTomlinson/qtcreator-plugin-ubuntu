@@ -449,10 +449,31 @@ bool UbuntuLocalRunConfiguration::ensureUbuntuProjectConfigured(QString *errorMe
     if (ubuntuProject) {
         m_workingDir = ubuntuProject->projectDirectory();
         if (ubuntuProject->mainFile().compare(QString::fromLatin1("www/index.html"), Qt::CaseInsensitive) == 0) {
+            QString manifestFilePath =
+                UbuntuProjectHelper::getManifestPath (target(),
+                                                      QStringLiteral("manifest.json"));
+
             Utils::Environment env = Utils::Environment::systemEnvironment();
-            m_executable = env.searchInPath(QString::fromLatin1(Ubuntu::Constants::UBUNTUHTML_PROJECT_LAUNCHER_EXE)).toString();
-            m_args = QStringList()<<QString::fromLatin1("--www=%0/www").arg(ubuntuProject->projectDirectory().toString())
-                                  <<QString::fromLatin1("--inspector");
+
+            UbuntuClickManifest manifest;
+            if (QFile::exists(manifestFilePath)
+                && manifest.load(manifestFilePath)
+                && manifest.policyVersion() >= QString::fromLatin1(Ubuntu::Constants::UBUNTUHTML_WEBAPP_CONTAINER_POLICY_MIN)) {
+                m_executable =
+                  env.searchInPath(QString::fromLatin1(Ubuntu::Constants::UBUNTUWEBAPP_PROJECT_LAUNCHER_EXE)).toString();
+                m_args = QStringList()
+                  << QString::fromLatin1("%0/www/index.html")
+                      .arg(ubuntuProject->projectDirectory().toString());
+            } else {
+                m_executable =
+                  env.searchInPath(QString::fromLatin1(Ubuntu::Constants::UBUNTUHTML_PROJECT_LAUNCHER_EXE)).toString();
+                m_args = QStringList()
+                  << QString::fromLatin1("--www=%0/www")
+                      .arg(ubuntuProject->projectDirectory().toString());
+            }
+
+            m_args << QString::fromLatin1("--inspector");
+
         } else if (ubuntuProject->mainFile().endsWith(QStringLiteral(".desktop"), Qt::CaseInsensitive)) {
             Utils::Environment env = Utils::Environment::systemEnvironment();
 

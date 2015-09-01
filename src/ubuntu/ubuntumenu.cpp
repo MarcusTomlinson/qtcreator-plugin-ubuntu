@@ -673,8 +673,14 @@ void UbuntuMenu::menuItemTriggered() {
                         }
 
                         if (isProperUbuntuHtmlProject(project)) {
-                            command = command.replace(QLatin1String(Constants::UBUNTU_ACTION_APP_RUNNER_EXECNAME),
-                                                      QLatin1String(Constants::UBUNTUHTML_PROJECT_LAUNCHER_EXE));
+                            QString launcherExec =
+                              QLatin1String(Constants::UBUNTUHTML_PROJECT_LAUNCHER_EXE);
+                            if (manifest.isInitialized()
+                                && manifest.policyVersion() >= QLatin1String(Constants::UBUNTUHTML_WEBAPP_CONTAINER_POLICY_MIN)) {
+                                launcherExec = QLatin1String(Constants::UBUNTUWEBAPP_PROJECT_LAUNCHER_EXE);
+                            }
+
+                            command = command.replace(QLatin1String(Constants::UBUNTU_ACTION_APP_RUNNER_EXECNAME), launcherExec);
                         }
 
                         QVariant clickTargetRequired = act->property(Constants::UBUNTU_MENUJSON_CLICKTARGETREQUIRED);

@@ -158,6 +158,8 @@ const char UBUNTUPROJECT_REMOTE_RUNCONTROL_APP_ID[] = "UbuntuProjectManager.Remo
 const char UBUNTUHTML_PROJECT_LAUNCHER_EXE[] = "ubuntu-html5-app-launcher";
 const char UBUNTUWEBAPP_PROJECT_LAUNCHER_EXE[] = "webapp-container";
 const char UBUNTUSCOPES_PROJECT_LAUNCHER_EXE[] = "qtc_desktop_scoperunner.py";
+ 
+const char UBUNTUHTML_WEBAPP_CONTAINER_POLICY_MIN[] = "1.3";
 
 const char UBUNTU_PROJECT_WIZARD_CATEGORY_DISPLAY[] = QT_TRANSLATE_NOOP("ProjectExplorer", "Ubuntu");
 
