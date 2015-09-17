@@ -4,7 +4,6 @@ _DisplayName=%ProjectName:c% Scope
 _Description=This is a %ProjectName:c% scope
 Author = Firstname Lastname
 Icon = icon.png
-SearchHint = Search
 
 [Appearance]
 PageHeader.Logo = logo.png
