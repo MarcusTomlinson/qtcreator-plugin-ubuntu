@@ -1,0 +1,15 @@
+{
+  "description": "A simple Unity scope written in JavaScript",
+  "maintainer": "%ClickMaintainer%",
+  "architecture": "@CLICK_ARCH@",
+  "name": "%ProjectName:l%.%ClickDomain:l%",
+  "title": "%ProjectName:l%",
+  "framework" : "%ClickFrameworkVersion%",
+  "hooks": {
+    "%ClickHookName:l%": {
+      "scope": "%ClickHookName:l%",
+      "apparmor": "%ClickHookName:l%.apparmor"
+    }
+  }
+}
+

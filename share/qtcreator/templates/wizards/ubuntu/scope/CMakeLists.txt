@@ -89,7 +89,7 @@ add_custom_target(hidden_files
     %ClickHookName:l%.apparmor
     src/data/%ClickHookName:l%.ini.in
     src/data/%ClickHookName:l%-settings.ini.in
-    po/POTFILES.in
+    po/POTFILES.in.in
     po/${GETTEXT_PACKAGE}.pot
     ${_PO_FILES}
 )
