@@ -6,7 +6,7 @@
         >
     <icon>../share/ubuntu.png</icon>
     <description>A simple JavaScript based Unity Scope</description>
-    <displayname>Unity JavaScript Scope</displayname>
+    <displayname>Unity Scope (JavaScript)</displayname>
     <displaycategory>Ubuntu</displaycategory>
     <files>
         <file source="po/CMakeLists.txt"/>

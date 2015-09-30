@@ -43,6 +43,7 @@ Depends: android-tools-adb,
          cmake-extras,
          unity-js-scopes-bindings [i386 amd64 armhf],
          unity-js-scopes-launcher [i386 amd64 armhf],
+         unity-js-scopes-tool,
 # up until this
          gdb-multiarch,
          click-reviewers-tools,
