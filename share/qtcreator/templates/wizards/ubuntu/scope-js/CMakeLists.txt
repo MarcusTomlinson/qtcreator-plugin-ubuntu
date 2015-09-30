@@ -9,7 +9,7 @@ execute_process(
 )
 
 # Do not remove this, its required to ensure the correct node binaries are included in the project
-execute_process(COMMAND unity-js-scopes-tool install ${CMAKE_SOURCE_DIR}/src/node_modules)
+execute_process(COMMAND unity-js-scopes-tool install ${CMAKE_SOURCE_DIR}/src/node_modules unity-js-scopes)
 add_custom_target(rebuild_modules ALL COMMAND unity-js-scopes-tool rebuild ${CMAKE_SOURCE_DIR}/src/node_modules ${CLICK_ARCH})
 
 # Do not remove this, its required for the correct functionality of the Ubuntu-SDK
