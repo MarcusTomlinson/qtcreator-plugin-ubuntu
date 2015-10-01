@@ -1,7 +1,7 @@
 {
   "description": "A simple Unity scope written in JavaScript",
   "maintainer": "%ClickMaintainer%",
-  "architecture": "@CLICK_ARCH@",
+  "architecture": "@ARCH@",
   "name": "%ProjectName:l%.%ClickDomain:l%",
   "title": "%ProjectName:l%",
   "framework" : "%ClickFrameworkVersion%",
