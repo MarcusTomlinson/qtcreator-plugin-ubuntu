@@ -30,7 +30,7 @@ configure_file(
 
 add_custom_target(
   copy_modules ALL
-  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  COMMAND ${CMAKE_COMMAND} -E create_symlink
     "${CMAKE_CURRENT_SOURCE_DIR}/node_modules"
     "${CMAKE_CURRENT_BINARY_DIR}/node_modules"
 )
