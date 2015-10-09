@@ -49,7 +49,7 @@ install(
 
 install(
   DIRECTORY
-    "${CMAKE_CURRENT_BINARY_DIR}/node_modules"
+    "${CMAKE_CURRENT_SOURCE_DIR}/node_modules"
   DESTINATION
     ${SCOPE_INSTALL_DIR}
   USE_SOURCE_PERMISSIONS
