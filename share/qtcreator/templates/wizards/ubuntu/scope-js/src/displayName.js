@@ -87,7 +87,7 @@ scopes.self.initialize(
                                             r = XML.parse(res);
 
                                             var category_renderer = new scopes.lib.category_renderer(JSON.stringify(CURRENT_TEMPLATE));
-                                            var category = search_reply.register_category("current", r.city.name + ", " + r.city.country, "");
+                                            var category = search_reply.register_category("current", r.city.name + ", " + r.city.country, "", category_renderer);
 
                                             var categorised_result = new scopes.lib.categorised_result(category);
                                             categorised_result.set_uri(r.city.id.toString());
@@ -135,7 +135,7 @@ scopes.self.initialize(
 
                                                 var weather_id = 1000000;
                                                 for (i = 0; i < r.forecast.time.length; i++) {
-                                                    var categorised_result = scopes.lib.new_categorised_result(category);
+                                                    var categorised_result = new scopes.lib.categorised_result(category);
                                                     categorised_result.set_uri((weather_id++).toString());
                                                     categorised_result.set_title(r.forecast.time[i].temperature.min.toString() + "°C to "
                                                                                  + r.forecast.time[i].temperature.max.toString() + "°C");
