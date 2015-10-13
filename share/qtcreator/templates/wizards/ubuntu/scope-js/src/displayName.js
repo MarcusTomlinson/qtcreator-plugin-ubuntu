@@ -1,9 +1,18 @@
 var scopes = require('unity-js-scopes')
+@if "%ContentType%" != "empty"
 var http = require('http');
+@if "%ContentType%" == "http+xml"
+var XML = require('pixl-xml');
+@endif
 
 var query_host = "api.openweathermap.org"
+@if "%ContentType%" == "http+xml"
+var current_weather_path = "/data/2.5/weather?units=metric&APPID=2b12bf09b4e0ab0c1aa5e32a9a3f0cdc&mode=xml&q="
+var forecast_weather_path = "/data/2.5/forecast/daily/?units=metric&cnt=7&APPID=2b12bf09b4e0ab0c1aa5e32a9a3f0cdc&mode=xml&q="
+@elsif "%ContentType%" == "http+json"
 var current_weather_path = "/data/2.5/weather?units=metric&APPID=2b12bf09b4e0ab0c1aa5e32a9a3f0cdc&q="
 var forecast_weather_path = "/data/2.5/forecast/daily/?units=metric&cnt=7&APPID=2b12bf09b4e0ab0c1aa5e32a9a3f0cdc&q="
+@endif
 
 var CURRENT_TEMPLATE =
 {
@@ -37,6 +46,7 @@ var FORECAST_TEMPLATE =
         "subtitle": "subtitle"
     }
 }
+@endif
 
 scopes.self.initialize(
             {}
@@ -57,6 +67,7 @@ scopes.self.initialize(
                                 metadata,
                                 // run
                                 function(search_reply) {
+@if "%ContentType%" != "empty"
                                     var qs = canned_query.query_string();
                                     if (!qs) {
                                         qs = "London,uk"
@@ -72,6 +83,19 @@ scopes.self.initialize(
 
                                         // The whole response has been recieved
                                         response.on('end', function() {
+@if "%ContentType%" == "http+xml"
+                                            r = XML.parse(res);
+
+                                            var category_renderer = new scopes.lib.category_renderer(JSON.stringify(CURRENT_TEMPLATE));
+                                            var category = search_reply.register_category("current", r.city.name + ", " + r.city.country, "");
+
+                                            var categorised_result = new scopes.lib.categorised_result(category);
+                                            categorised_result.set_uri(r.city.id.toString());
+                                            categorised_result.set_title(r.temperature.value.toString() + "°C");
+                                            categorised_result.set_art("http://openweathermap.org/img/w/" + r.weather.icon + ".png");
+                                            categorised_result.set("subtitle", r.weather.value);
+                                            categorised_result.set("description", "A description of the result");
+@elsif "%ContentType%" == "http+json"
                                             r = JSON.parse(res);
 
                                             var category_renderer = new scopes.lib.category_renderer(JSON.stringify(CURRENT_TEMPLATE));
@@ -83,6 +107,7 @@ scopes.self.initialize(
                                             categorised_result.set_art("http://openweathermap.org/img/w/" + r.weather[0].icon + ".png");
                                             categorised_result.set("subtitle", r.weather[0].description);
                                             categorised_result.set("description", "A description of the result");
+@endif
 
                                             search_reply.push(categorised_result);
 
@@ -102,6 +127,25 @@ scopes.self.initialize(
                                         // The whole response has been recieved
                                         response.on('end', function() {
                                             try {
+@if "%ContentType%" == "http+xml"
+                                                r = XML.parse(res);
+
+                                                var category_renderer = new scopes.lib.category_renderer(JSON.stringify(FORECAST_TEMPLATE));
+                                                var category = search_reply.register_category("forecast", "7 day forecast", "", category_renderer);
+
+                                                var weather_id = 1000000;
+                                                for (i = 0; i < r.forecast.time.length; i++) {
+                                                    var categorised_result = scopes.lib.new_categorised_result(category);
+                                                    categorised_result.set_uri((weather_id++).toString());
+                                                    categorised_result.set_title(r.forecast.time[i].temperature.min.toString() + "°C to "
+                                                                                 + r.forecast.time[i].temperature.max.toString() + "°C");
+                                                    categorised_result.set_art("http://openweathermap.org/img/w/" + r.forecast.time[i].symbol.var + ".png");
+                                                    categorised_result.set("subtitle", r.forecast.time[i].symbol.name);
+                                                    categorised_result.set("description", "A description of the result");
+
+                                                    search_reply.push(categorised_result);
+                                                }
+@elsif "%ContentType%" == "http+json"
                                                 r = JSON.parse(res);
 
                                                 var category_renderer = new scopes.lib.category_renderer(JSON.stringify(FORECAST_TEMPLATE));
@@ -118,6 +162,7 @@ scopes.self.initialize(
 
                                                     search_reply.push(categorised_result);
                                                 }
+@endif
 
                                                 // We are done, call finished() on our search_reply
                                                 search_reply.finished();
@@ -130,6 +175,7 @@ scopes.self.initialize(
                                     }
 
                                     http.request({host: query_host, path: current_weather_path + qs}, current_weather_cb).end();
+@endif
                                 },
                                 // cancelled
                                 function() {
@@ -141,6 +187,7 @@ scopes.self.initialize(
                                 action_metadata,
                                 // run
                                 function(preview_reply) {
+@if "%ContentType%" != "empty"
                                     var layout1col = new scopes.lib.column_layout(1);
                                     var layout2col = new scopes.lib.column_layout(2);
                                     var layout3col = new scopes.lib.column_layout(3);
@@ -167,6 +214,7 @@ scopes.self.initialize(
 
                                     preview_reply.push([image, header, description ]);
                                     preview_reply.finished();
+@endif
                                 },
                                 // cancelled
                                 function() {

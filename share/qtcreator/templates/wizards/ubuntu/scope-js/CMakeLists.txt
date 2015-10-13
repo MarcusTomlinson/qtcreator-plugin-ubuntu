@@ -10,6 +10,9 @@ execute_process(
 
 # This is required to ensure the correct node modules are included in the project
 execute_process(COMMAND unity-js-scopes-tool install ${CMAKE_SOURCE_DIR}/src/node_modules unity-js-scopes)
+@if "%ContentType%" == "http+xml"
+execute_process(COMMAND unity-js-scopes-tool install ${CMAKE_SOURCE_DIR}/src/node_modules pixl-xml)
+@endif
 add_custom_target(build_modules ALL COMMAND unity-js-scopes-tool build ${CMAKE_SOURCE_DIR}/src/node_modules ${ARCH})
 
 # Do not remove this, its required for the correct functionality of the Ubuntu-SDK

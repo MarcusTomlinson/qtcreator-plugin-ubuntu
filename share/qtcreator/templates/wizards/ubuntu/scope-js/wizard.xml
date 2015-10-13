@@ -74,8 +74,11 @@
         <field name="ContentType">
             <fieldcontrol class="QComboBox" defaultindex="0">
                 <comboentries>
-                    <comboentry value="network-http-json">
+                    <comboentry value="http+json">
                         <comboentrytext>JavaScript scope using HTTP and JSON</comboentrytext>
+                    </comboentry>
+                    <comboentry value="http+xml">
+                        <comboentrytext>JavaScript scope using HTTP and XML</comboentrytext>
                     </comboentry>
                     <comboentry value="empty">
                         <comboentrytext>Empty scope</comboentrytext>

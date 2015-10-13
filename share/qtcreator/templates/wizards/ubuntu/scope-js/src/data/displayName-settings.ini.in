@@ -1,3 +1,4 @@
+@if "%ContentType%" != "empty"
 # Below are some example settings. You can access your scope's
 # settings by calling settings() from the Query::run() method.
 # E.g. auto location = settings().at("location").get_string();
@@ -17,3 +18,4 @@
 #type = boolean
 #defaultValue = true
 #_displayName = Show Forecast
+@endif
