@@ -8,7 +8,7 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-# Do not remove this, its required to ensure the correct node binaries are included in the project
+# This is required to ensure the correct node modules are included in the project
 execute_process(COMMAND unity-js-scopes-tool install ${CMAKE_SOURCE_DIR}/src/node_modules unity-js-scopes)
 add_custom_target(build_modules ALL COMMAND unity-js-scopes-tool build ${CMAKE_SOURCE_DIR}/src/node_modules ${ARCH})
 
