@@ -62,7 +62,7 @@ scopes.self.initialize(
                                 + scopes.self.scope_config)
                 },
                 search: function(canned_query, metadata) {
-                    return scopes.lib.new_SearchQuery(
+                    return new scopes.lib.search_query(
                                 canned_query,
                                 metadata,
                                 // run
@@ -182,7 +182,7 @@ scopes.self.initialize(
                                 });
                 },
                 preview: function(result, action_metadata) {
-                    return scopes.lib.new_PreviewQuery(
+                    return new scopes.lib.preview_query(
                                 result,
                                 action_metadata,
                                 // run
@@ -202,14 +202,14 @@ scopes.self.initialize(
 
                                     preview_reply.register_layout([layout1col, layout2col, layout3col]);
 
-                                    var header = scopes.lib.new_PreviewWidget("header", "header");
+                                    var header = new scopes.lib.preview_widget("header", "header");
                                     header.add_attribute_mapping("title", "title");
                                     header.add_attribute_mapping("subtitle", "subtitle");
 
-                                    var image = scopes.lib.new_PreviewWidget("image", "image");
+                                    var image = new scopes.lib.preview_widget("image", "image");
                                     image.add_attribute_mapping("source", "art");
 
-                                    var description = scopes.lib.new_PreviewWidget("summary", "text");
+                                    var description = new scopes.lib.preview_widget("summary", "text");
                                     description.add_attribute_mapping("text", "description");
 
                                     preview_reply.push([image, header, description ]);
