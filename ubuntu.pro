@@ -29,4 +29,3 @@ OTHER_FILES +=  \
 !exists( $$PWD/../plugins.pro ) {
     qt_install_libs = $$[QT_INSTALL_LIBS]
 }
-
