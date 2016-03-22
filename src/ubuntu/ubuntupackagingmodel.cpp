@@ -185,7 +185,7 @@ void UbuntuPackagingModel::onFinished(QString cmd, int code) {
             if (line.isEmpty()) {
                 continue;
             }
-            if (line.startsWith(QLatin1String(Constants::UBUNTUDEVICESWIDGET_ONFINISHED_LOCAL_NO_EMULATOR_INSTALLED))) {
+            if (line.startsWith(QLatin1String(Constants::UBUNTUDEVICESWIDGET_ONFINISHED_LOCAL_NOT_INSTALLED))) {
                 // There is no click reviewer tool installed
                 m_reviewToolsInstalled = false;
                 setShowValidationUi(false);

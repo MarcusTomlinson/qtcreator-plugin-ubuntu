@@ -192,10 +192,6 @@ Item {
                         width: height
                         anchors.verticalCenter: parent.verticalCenter
                         onClicked: {
-                            if(!devicesModel.emulatorInstalled){
-                                PopupUtils.open(resourceRoot+"/DevicesPage/EmulatorNotInstalled.qml",devicePage);
-                                return;
-                            }
                             PopupUtils.open(resourceRoot+"/DevicesPage/NewEmulatorDialog.qml",devicePage);
                         }
                     }

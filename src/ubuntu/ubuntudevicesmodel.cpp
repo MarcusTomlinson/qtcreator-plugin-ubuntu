@@ -361,7 +361,6 @@ void UbuntuDevicesModel::deleteDevice(const int devId)
 void UbuntuDevicesModel::refresh()
 {
     readDevicesFromSettings();
-    checkEmulatorInstalled();
 }
 
 void UbuntuDevicesModel::clear()
@@ -619,19 +618,6 @@ void UbuntuDevicesModel::registerNewDevice(const QString &serial, const QString 
     ProjectExplorer::DeviceManager::instance()->addDevice(dev);
 }
 
-bool UbuntuDevicesModel::emulatorInstalled() const
-{
-    return m_emulatorInstalled;
-}
-
-void UbuntuDevicesModel::setEmulatorInstalled(bool arg)
-{
-    if (m_emulatorInstalled != arg) {
-        m_emulatorInstalled = arg;
-        emit emulatorInstalledChanged(arg);
-    }
-}
-
 bool UbuntuDevicesModel::busy() const
 {
     return m_busy;
@@ -648,14 +634,6 @@ void UbuntuDevicesModel::setBusy(bool arg)
 QString UbuntuDevicesModel::state() const
 {
     switch(m_state) {
-        case CheckEmulatorInstalled: {
-            return tr("Checking if emulator tool is installed");
-            break;
-        }
-        case InstallEmulator: {
-            return tr("Installing emulator tool");
-            break;
-        }
         case CreateEmulatorImage: {
             return tr("Creating emulator image");
             break;
@@ -713,22 +691,6 @@ void UbuntuDevicesModel::endAction(const QString &msg)
     emit logMessage(QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_ACTION_END).arg(msg));
 }
 
-void UbuntuDevicesModel::checkEmulatorInstalled()
-{
-    setState(CheckEmulatorInstalled);
-    setCancellable(false);
-    m_emulatorInstalled = false;
-
-    beginAction(QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_LOCAL_EMULATOR_INSTALLED));
-    m_process->stop();
-    QString sEmulatorPackageName = QLatin1String(Ubuntu::Constants::EMULATOR_PACKAGE_NAME);
-    m_process->append(QStringList()
-                      << QString::fromLatin1(Constants::UBUNTUWIDGETS_LOCAL_PACKAGE_INSTALLED_SCRIPT).arg(Ubuntu::Constants::UBUNTU_SCRIPTPATH).arg(sEmulatorPackageName)
-                      << QCoreApplication::applicationDirPath());
-    m_process->start(QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_LOCAL_EMULATOR_INSTALLED));
-
-}
-
 void UbuntuDevicesModel::findEmulatorImages()
 {
     setState(FindImages);
@@ -740,23 +702,6 @@ void UbuntuDevicesModel::findEmulatorImages()
                       << QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_LOCAL_SEARCH_IMAGES_SCRIPT).arg(Ubuntu::Constants::UBUNTU_SCRIPTPATH)
                       << QCoreApplication::applicationDirPath());
     m_process->start(QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_LOCAL_SEARCH_IMAGES));
-}
-
-void UbuntuDevicesModel::installEmulator()
-{
-    if(m_emulatorInstalled)
-        return;
-
-    setState(InstallEmulator);
-    setCancellable(false);
-
-    beginAction(QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_INSTALL_EMULATOR_PACKAGE));
-    QString sEmulatorPackageName = QLatin1String(Ubuntu::Constants::EMULATOR_PACKAGE_NAME);
-    m_process->stop();
-    m_process->append(QStringList()
-                      << QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_INSTALL_EMULATOR_PACKAGE_SCRIPT).arg(Ubuntu::Constants::UBUNTU_SCRIPTPATH).arg(sEmulatorPackageName)
-                      << QCoreApplication::applicationDirPath());
-    m_process->start(QString::fromLatin1(Constants::UBUNTUDEVICESWIDGET_INSTALL_EMULATOR_PACKAGE));
 }
 
 void UbuntuDevicesModel::doCreateEmulatorImage(UbuntuProcess *process, const QString &name, const QString &arch, const QString &channel, const QString &passwd)
@@ -894,9 +839,6 @@ void UbuntuDevicesModel::cancel()
 
 void UbuntuDevicesModel::onMessage(const QString &msg)
 {
-    if (msg.startsWith(QLatin1String(Constants::UBUNTUDEVICESWIDGET_ONFINISHED_UNABLE_TO_FETCH))) {
-        setEmulatorInstalled(false);
-    }
     m_reply.append(msg);
 }
 
@@ -911,54 +853,6 @@ void UbuntuDevicesModel::processFinished(const QString &, int exitCode)
     };
 
     switch(lastState) {
-        case CheckEmulatorInstalled: {
-            QStringList lines = m_reply.trimmed().split(QLatin1String(Constants::LINEFEED));
-            foreach(QString line, lines) {
-                line = line.trimmed();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                if (line.startsWith(QLatin1String(Constants::UBUNTUDEVICESWIDGET_ONFINISHED_LOCAL_NO_EMULATOR_INSTALLED))) {
-                    setEmulatorInstalled(false);
-                    queryAdb();
-                } else {
-                    QStringList lineData = line.split(QLatin1String(Constants::SPACE));
-                    QString sEmulatorPackageStatus = lineData.takeFirst();
-                    //QString sEmulatorPackageName = lineData.takeFirst();
-                    //QString sEmulatorPackageVersion = lineData.takeFirst();
-                    if (sEmulatorPackageStatus.startsWith(QLatin1String(Constants::INSTALLED))) {
-                        setEmulatorInstalled(true);
-                        findEmulatorImages();
-                    }
-                }
-            }
-            break;
-        }
-        case InstallEmulator: {
-            QStringList lines = m_reply.trimmed().split(QLatin1String(Constants::LINEFEED));
-            foreach(QString line, lines) {
-                line = line.trimmed();
-                if (line.isEmpty()) {
-                    continue;
-                }
-                if (line.startsWith(QLatin1String(Constants::UBUNTUDEVICESWIDGET_ONFINISHED_LOCAL_NO_EMULATOR_INSTALLED))) {
-                    setEmulatorInstalled(false);
-                    queryAdb();
-                    break;
-                } else {
-                    QStringList lineData = line.split(QLatin1String(Constants::SPACE));
-                    QString sEmulatorPackageStatus = lineData.takeFirst();
-                    //QString sEmulatorPackageName = lineData.takeFirst();
-                    //QString sEmulatorPackageVersion = lineData.takeFirst();
-                    if (sEmulatorPackageStatus.startsWith(QLatin1String(Constants::INSTALLED))) {
-                        setEmulatorInstalled(true);
-                        findEmulatorImages();
-                        break;
-                    }
-                }
-            }
-            break;
-        }
         case CreateEmulatorImage: {
             findEmulatorImages();
             break;

@@ -69,8 +69,6 @@ public:
 
     enum State {
         Initial,
-        CheckEmulatorInstalled,
-        InstallEmulator,
         CreateEmulatorImage,
         ReadFromSettings,
         FindImages,
@@ -78,7 +76,6 @@ public:
         Idle
     };
 
-    Q_PROPERTY(bool emulatorInstalled READ emulatorInstalled WRITE setEmulatorInstalled NOTIFY emulatorInstalledChanged)
     Q_PROPERTY(bool busy READ busy NOTIFY busyChanged)
     Q_PROPERTY(bool cancellable READ cancellable NOTIFY cancellableChanged)
     Q_PROPERTY(QString state READ state NOTIFY stateChanged)
@@ -101,7 +98,6 @@ public:
     bool cancellable() const;
     QString state() const;
     bool busy() const;
-    bool emulatorInstalled() const;
 
     static void doCreateEmulatorImage ( UbuntuProcess *process, const QString &name, const QString &arch, const QString &channel, const QString &passwd );
 signals:
@@ -110,7 +106,6 @@ signals:
     void stdErrMessage (const QString &str);
 
     void busyChanged(bool arg);
-    void emulatorInstalledChanged(bool arg);
     void cancellableChanged(bool arg);
     void stateChanged(QString arg);
 
@@ -139,14 +134,11 @@ protected:
 
     void setState(UbuntuDevicesModel::State newState);
     void setBusy(bool arg);
-    void setEmulatorInstalled(bool arg);
     void setCancellable(bool arg);
 
     void beginAction(const QString &msg);
     void endAction(const QString &msg);
-    void checkEmulatorInstalled();
     void findEmulatorImages();
-    void installEmulator();
     void queryAdb();
 
 protected slots:
@@ -167,7 +159,6 @@ private:
     QList<UbuntuDevicesItem*> m_knownDevices;
     UbuntuDeviceNotifier *m_deviceNotifier;
     bool      m_busy;
-    bool      m_emulatorInstalled;
     bool      m_cancellable;
     State     m_state;
 

@@ -16,7 +16,6 @@ QML_FILES += \
     $$QML_ROOT/qml/DevicesPage/DevicePage.qml  \
     $$QML_ROOT/qml/DevicesPage/NewEmulatorDialog.qml \
     $$QML_ROOT/qml/DevicesPage/DeleteDeviceDialog.qml \
-    $$QML_ROOT/qml/DevicesPage/EmulatorNotInstalled.qml \
     $$QML_ROOT/qml/welcome.qml \
     $$QML_ROOT/qml/publishpage.qml \
     $$QML_ROOT/qml/devicespage.qml

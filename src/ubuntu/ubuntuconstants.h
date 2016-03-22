@@ -41,7 +41,7 @@ const char UBUNTU_MIMETYPE_XML[] = ":/ubuntu/UbuntuProject.mimetypes.xml";
 const char UBUNTUDEVICESWIDGET_ONERROR[] = "<p style=\"color: red\">%0</p>";
 const char UBUNTUDEVICESWIDGET_ACTION_BEGIN[] = "<p style=\"color: #888\">%0</p>";
 const char UBUNTUDEVICESWIDGET_ACTION_END[] = "<p style=\"color: #888\">%0</p>";
-const char UBUNTUDEVICESWIDGET_ONFINISHED_LOCAL_NO_EMULATOR_INSTALLED[] = "The package is not installed.";
+const char UBUNTUDEVICESWIDGET_ONFINISHED_LOCAL_NOT_INSTALLED[] = "The package is not installed.";
 const char UBUNTUDEVICESWIDGET_ONFINISHED_ADB_REGEX[] = "(\\S+)\\s+(.*)";
 const char UBUNTUDEVICESWIDGET_ONFINISHED_ADB_NOACCESS[] = "???";
 const char UBUNTUDEVICESWIDGET_ONFINISHED_SSH_WAS_STARTED[] = "..openssh-server was started.";
@@ -52,7 +52,6 @@ const char UBUNTUDEVICESWIDGET_ONFINISHED_SSH_NOT_INSTALLED[] = "..openssh-serve
 const char UBUNTUDEVICESWIDGET_ONFINISHED_UNABLE_TO_FETCH[] = "E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing?";
 
 const char UBUNTUWIDGETS_ONFINISHED_SCRIPT_LOCAL_PACKAGE_INSTALLED[] = "%0/local_package_installed";  
-const char UBUNTUDEVICESWIDGET_ONFINISHED_SCRIPT_LOCAL_INSTALL_EMULATOR[] = "%0/local_install_emulator";
 
 const char UBUNTUDEVICESWIDGET_ONFINISHED_WRITABLE_ENABLED[] = "..writable image has been enabled, device is rebooting.";
 const char UBUNTUDEVICESWIDGET_ONFINISHED_WRITABLE_DISABLED[] = "..writable image has been disabled, device is rebooting.";
@@ -72,13 +71,9 @@ const char UBUNTUDEVICESWIDGET_ONFINISHED_PORTS_FORWARDED[] = "..ports forwarded
 const char UBUNTUDEVICESWIDGET_ONFINISHED_PUBLICKEY_AUTH_SET[] = "..public key authentication is now set.";
 const char UBUNTUDEVICESWIDGET_ONFINISHED_NETWORK_CONF_COPIED[] = "..network configuration copied.";
 
-const char EMULATOR_PACKAGE_NAME[] = "ubuntu-emulator";
 const char DEFAULT_EMULATOR_PATH[] = "ubuntu-emulator";
 const char REVIEWER_PACKAGE_NAME[] = "click-reviewers-tools";
 
-const char UBUNTUDEVICESWIDGET_LOCAL_EMULATOR_INSTALLED[] = "Checking installed emulator package.";
-const char UBUNTUDEVICESWIDGET_INSTALL_EMULATOR_PACKAGE[] = "Install the emulator package on the system..";
-const char UBUNTUDEVICESWIDGET_INSTALL_EMULATOR_PACKAGE_SCRIPT[] = "%0/local_install_emulator %1";
 const char UBUNTUDEVICESWIDGET_LOCAL_SEARCH_IMAGES_SCRIPT[] = "%0/local_search_images";
 const char UBUNTUDEVICESWIDGET_LOCAL_SEARCH_IMAGES[] = "Search configured emulator instances.";
 const char UBUNTUDEVICESWIDGET_LOCAL_CREATE_EMULATOR[] = "Creating new emulator instance.";
