@@ -1,3 +1,13 @@
+qtcreator-plugin-ubuntu (3.5.0+16.10.20160608-0ubuntu1) yakkety; urgency=medium
+
+  [ Benjamin Zeller ]
+  * LXD rewrite for building and running apps in LXD containers (LP:
+    #1584093)
+  * Problem autodetection/autofix feature to react on changes in the
+    backend
+
+ -- Zoltán Balogh <zoltan.balogh@canonical.com>  Wed, 08 Jun 2016 09:03:03 +0000
+
 qtcreator-plugin-ubuntu (3.5.0+16.10.20160512-0ubuntu1) yakkety; urgency=medium
 
   [ Zoltán Balogh ]
