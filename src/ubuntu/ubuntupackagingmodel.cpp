@@ -44,6 +44,7 @@
 #include <projectexplorer/kit.h>
 #include <projectexplorer/buildsteplist.h>
 #include <projectexplorer/toolchain.h>
+#include <extensionsystem/pluginmanager.h>
 #include <coreplugin/actionmanager/actionmanager.h>
 #include <coreplugin/actionmanager/actioncontainer.h>
 #include <cmakeprojectmanager/cmakeprojectconstants.h>
@@ -68,6 +69,17 @@ namespace Internal {
 enum {
     debug = 0
 };
+
+static void showCompileOutputPane ()
+{
+    QObject *paneObj = ExtensionSystem::PluginManager::getObjectByClassName(QStringLiteral("ProjectExplorer::Internal::CompileOutputWindow"));
+    QTC_ASSERT(paneObj != nullptr, return);
+
+    Core::IOutputPane *compileWindow = qobject_cast<Core::IOutputPane *>(paneObj);
+    if (compileWindow) {
+        compileWindow->showPage(Core::IOutputPane::NoModeSwitch);
+    }
+}
 
 UbuntuPackagingModel::UbuntuPackagingModel(QObject *parent) :
     QObject(parent),
@@ -540,6 +552,7 @@ void UbuntuPackagingModel::buildClickPackage()
             }
 
             ProjectExplorer::BuildManager::buildLists(rawSteps,rawStepMessages);
+            showCompileOutputPane();
         }
 
     } else if(isCMake || isHtml || isQml) {
@@ -586,6 +599,7 @@ void UbuntuPackagingModel::buildClickPackage()
         m_buildManagerConnection = connect(ProjectExplorer::BuildManager::instance(),SIGNAL(buildQueueFinished(bool)),this,SLOT(buildFinished(bool)));
 
         ProjectExplorer::BuildManager::buildList(m_packageBuildSteps.last().data(),tr("Build Project"));
+        showCompileOutputPane();
     }
 }
 
@@ -640,6 +654,7 @@ void UbuntuPackagingModel::buildSnapPackage()
     m_buildManagerConnection = connect(ProjectExplorer::BuildManager::instance(),SIGNAL(buildQueueFinished(bool)),this,SLOT(buildFinished(bool)));
 
     ProjectExplorer::BuildManager::buildList(m_packageBuildSteps.last().data(),tr("Build Project"));
+    showCompileOutputPane();
 }
 
 /*!

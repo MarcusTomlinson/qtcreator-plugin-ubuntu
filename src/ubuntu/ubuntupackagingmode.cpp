@@ -34,6 +34,8 @@
 #include <QScrollArea>
 
 #include <cmakeprojectmanager/cmakeprojectconstants.h>
+#include <coreplugin/minisplitter.h>
+#include <coreplugin/outputpane.h>
 
 #include <QScrollArea>
 #include <QQuickView>
@@ -74,7 +76,17 @@ UbuntuPackagingMode::UbuntuPackagingMode(QObject *parent) :
     container->setMinimumWidth(860);
     container->setMinimumHeight(548);
     container->setFocusPolicy(Qt::TabFocus);
-    layout->addWidget(container);
+
+    auto mainWindowSplitter = new Core::MiniSplitter;
+    mainWindowSplitter->addWidget(container);
+    auto outputPane = new Core::OutputPanePlaceHolder(Ubuntu::Constants::UBUNTU_MODE_PACKAGING, mainWindowSplitter);
+    mainWindowSplitter->addWidget(outputPane);
+    mainWindowSplitter->setStretchFactor(0, 10);
+    mainWindowSplitter->setStretchFactor(1, 0);
+    mainWindowSplitter->setOrientation(Qt::Vertical);
+
+
+    layout->addWidget(mainWindowSplitter);
 
     m_modeView->rootContext()->setContextProperty(QLatin1String("publishModel") ,m_viewModel);
     m_modeView->rootContext()->setContextProperty(QLatin1String("resourceRoot") ,Constants::UBUNTU_DEVICESCREEN_ROOT);
