@@ -220,6 +220,8 @@ HEADERS +=  \
     src/ubuntu/device/remote/ubuntudirectuploadstep.h \
     src/ubuntu/device/remote/ubuntudeploystepfactory.h
 
+include(src/ubuntu/snap/snap.pri)
+
 
 FORMS += \
     src/ubuntu/device/remote/ubunturemoterunconfigurationwidget.ui \

@@ -17,4 +17,9 @@
       <sub-class-of type="application/json"/>
       <glob pattern="manifest.json*"/>
   </mime-type>
+  <mime-type type="application/x-snapcraft">
+      <comment>Ubuntu Manifest file</comment>
+      <sub-class-of type="application/x-yaml"/>
+      <glob pattern="snapcraft.yaml"/>
+  </mime-type>
 </mime-info>

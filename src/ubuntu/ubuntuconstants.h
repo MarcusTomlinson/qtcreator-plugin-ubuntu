@@ -393,6 +393,13 @@ const char UBUNTU_MIGRATE_QMAKE_PROJECT[] = "UbuntuProjectManager.MigrateQMakePr
 const char CHROOT_UPDATE_LIST_SCRIPT[] = "%1/ubuntu/scripts/qtc_chroot_get_upgrades.py %2 %3";
 
 
+//Snapcraft
+const char SNAPCRAFT_PROJECT_MIMETYPE[] = "application/x-snapcraft";
+const char SNAPCRAFT_PROJECT_ID[] = "UbuntuProjectManager.SnapcraftProject";
+const char SNAPCRAFT_PROJECT_PROJECTCONTEXT[] = "SnapcraftProject.ProjectContext";
+
+
+
 } // namespace Ubuntu
 } // namespace Constants
 

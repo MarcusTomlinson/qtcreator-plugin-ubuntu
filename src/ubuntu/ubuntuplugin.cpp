@@ -53,6 +53,8 @@
 #include <ubuntu/wizards/ubuntufirstrunwizard.h>
 #include <ubuntu/wizards/ubuntuprojectmigrationwizard.h>
 
+#include <ubuntu/snap/project/snapcraftprojectmanager.h>
+
 #include "ubuntujsextension.h"
 
 #include <coreplugin/modemanager.h>
@@ -171,6 +173,7 @@ bool UbuntuPlugin::initialize(const QStringList &arguments, QString *errorString
 
     // Handle new project type files
     addAutoReleasedObject(new UbuntuProjectManager);
+    addAutoReleasedObject(new SnapcraftProjectManager);
     addAutoReleasedObject(new UbuntuLocalRunConfigurationFactory);
     addAutoReleasedObject(new UbuntuRemoteRunControlFactory);
     addAutoReleasedObject(new UbuntuLocalRunControlFactory);
@@ -407,8 +410,7 @@ bool UbuntuPlugin::checkContainerSetup()
                 if (Settings::askForContainerSetup()) {
                     QString text = tr("The container backend is not completely initialized.\n\n"
                                       "Create default configuration?\n"
-                                      "Not setting up the container configuration will\nmake it impossible to run applications locally.\n\n"
-                                      "Note: Will override existing LXD configurations."
+                                      "Not setting up the container configuration will\nmake it impossible to run applications locally."
                                       );
 
                     QMessageBox box(QMessageBox::Question, qApp->applicationName(),text, QMessageBox::Yes | QMessageBox::No | QMessageBox::Abort, Core::ICore::mainWindow());
