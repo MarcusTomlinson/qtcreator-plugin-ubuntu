@@ -382,6 +382,7 @@ bool UbuntuPlugin::checkContainerSetup()
 
     while (!ok) {
         QProcess proc;
+        qDebug()<<"Running "<<Constants::UBUNTU_TARGET_TOOL;
         proc.setProgram(Constants::UBUNTU_TARGET_TOOL);
 
         QStringList args{QStringLiteral("initialized")};

@@ -67,25 +67,29 @@ bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
 
             YAML::Node subProject = it->second;
             QString partName = QString::fromStdString(it->first.as<std::string>());
-            QString subType  = QString::fromStdString(subProject["plugin"].as<std::string>());
+            //QString subType  = QString::fromStdString(subProject["plugin"].as<std::string>());
             QString source   = QDir::cleanPath(QString::fromStdString(subProject["source"].as<std::string>()));
 
             partsFromYaml << partName;
 
-            Utils::FileName sourcePath = filePath().parentDir().appendPath(source);
+            // We only show a part if it locally exists and is a directory
+            QString sourcePathName = QDir::cleanPath(filePath().parentDir().appendPath(source).toString());
+            Utils::FileName sourcePath = Utils::FileName::fromString(sourcePathName);
+            if (sourcePath.exists() && sourcePath.toFileInfo().isDir()) {
 
-            int idx = existingParts.indexOf(partName);
-            if (idx >= 0) {
-                //check if source is still the same
-                SnapcraftGenericPartNode *n = static_cast<SnapcraftGenericPartNode *>(existingNodes.at(idx));
-                if (n->filePath() == sourcePath)
-                    continue;
+                int idx = existingParts.indexOf(partName);
+                if (idx >= 0) {
+                    //check if source is still the same
+                    SnapcraftGenericPartNode *n = static_cast<SnapcraftGenericPartNode *>(existingNodes.at(idx));
+                    if (n->filePath() == sourcePath)
+                        continue;
 
-                nodesToRemove << n;
+                    nodesToRemove << n;
+                }
+
+                SnapcraftGenericPartNode *partNode =  new SnapcraftGenericPartNode(partName, sourcePath);
+                nodesToAdd << partNode;
             }
-
-            SnapcraftGenericPartNode *partNode =  new SnapcraftGenericPartNode(partName, sourcePath);
-            nodesToAdd << partNode;
         }
 
         QSet<QString> obsoleteParts = existingParts.toSet() - partsFromYaml.toSet();
@@ -128,7 +132,11 @@ SnapcraftGenericPartNode::SnapcraftGenericPartNode(const QString &partName, cons
 {
     scheduleProjectScan();
 
-    m_watcher.addPath(folderPath.toString());
+    if (m_watcher.addPath(folderPath.toString())) {
+        qDebug()<<"Added"<<folderPath.toString()<<"to watcher";
+    } else {
+        qDebug()<<"Failed to add"<<folderPath.toString()<<"to watcher";
+    }
     QObject::connect(&m_watcher, &QFileSystemWatcher::directoryChanged, [this](const QString &){
         scheduleProjectScan();
     });
@@ -164,7 +172,9 @@ void SnapcraftGenericPartNode::removeFileNodes(const QList<Utils::FileName> &fil
         FindFileNodesForFileVisitor vis(f);
         this->accept(&vis);
 
-        removeFileNodes(vis.nodes());
+        for (ProjectExplorer::FileNode *node : vis.nodes()) {
+            node->parentFolderNode()->removeFileNodes({node});
+        }
     }
 }
 
@@ -172,20 +182,20 @@ void SnapcraftGenericPartNode::removeFolderNodes(QList<Utils::FileName> &dirs)
 {
 
     qSort(dirs.begin(), dirs.end(),[](const Utils::FileName &a, const Utils::FileName &b){
-        return a.toFileInfo().absolutePath() < b.toFileInfo().absolutePath();
+        return a.toFileInfo().absoluteFilePath() > b.toFileInfo().absoluteFilePath();
     });
 
-    qDebug()<<"About to remove "<<dirs;
-
     foreach(const Utils::FileName &f, dirs) {
-        if(!f.toFileInfo().isDir())
-            continue;
-
         FindNodesForFolderVisitor vis(f);
         this->accept(&vis);
 
-        m_watcher.removePath(f.toFileInfo().absolutePath());
-        removeFolderNodes(vis.nodes());
+        FindNodesForFolderVisitor visParent(f.parentDir());
+        this->accept(&visParent);
+
+        if(visParent.nodes().size()) {
+            m_watcher.removePath(f.toFileInfo().absoluteFilePath());
+            visParent.nodes()[0]->removeFolderNodes(vis.nodes());
+        }
     }
 }
 
@@ -225,8 +235,11 @@ void SnapcraftGenericPartNode::scanProjectDirectory()
     for (const Utils::FileName &file :  filesToAdd) {
         Utils::FileName folderPath = file.parentDir();
 
+        //do not show the project file twice
+        if (file == projectNode()->filePath())
+            continue;
+
         ProjectExplorer::FolderNode *parentNode = nullptr;
-        qDebug()<<"Compare "<<folderPath<<filePath();
         if (folderPath == filePath()) {
             parentNode = this;
         } else {
@@ -242,13 +255,14 @@ void SnapcraftGenericPartNode::scanProjectDirectory()
 
 ProjectExplorer::FolderNode *SnapcraftGenericPartNode::createOrFindFolder(const QStringList &folder)
 {
+    QStringList watches;
     ProjectExplorer::FolderNode *currFolder = this;
 
     Utils::FileName currentPath = filePath();
 
     for (const QString &folderName: folder) {
 
-        QList<ProjectExplorer::FolderNode *> subnodes = subFolderNodes();
+        QList<ProjectExplorer::FolderNode *> subnodes = currFolder->subFolderNodes();
         currentPath = currentPath.appendPath(folderName);
 
         auto check = [&folderName](ProjectExplorer::FolderNode *f) {
@@ -267,8 +281,10 @@ ProjectExplorer::FolderNode *SnapcraftGenericPartNode::createOrFindFolder(const 
         ProjectExplorer::FolderNode *fNode = new ProjectExplorer::FolderNode(currentPath, ProjectExplorer::FolderNodeType, folderName);
         currFolder->addFolderNodes({fNode});
         currFolder = fNode;
-        m_watcher.addPath(currentPath.toFileInfo().absolutePath());
+
+        watches << currentPath.toFileInfo().absoluteFilePath();
     }
+    qDebug()<<"Failed to add watches: "<<m_watcher.addPaths(watches);
     return currFolder;
 }
 
@@ -338,7 +354,8 @@ void FindNodesForFolderVisitor::visitProjectNode(ProjectExplorer::ProjectNode *)
 
 void FindNodesForFolderVisitor::visitFolderNode(ProjectExplorer::FolderNode *folderNode)
 {
-    m_nodes.append(folderNode);
+    if (m_folder == folderNode->filePath())
+        m_nodes.append(folderNode);
 }
 
 
