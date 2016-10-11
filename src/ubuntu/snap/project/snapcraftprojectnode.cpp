@@ -128,7 +128,7 @@ static void enumChild(const QDir &dir, QSet<Utils::FileName> &dirs, QSet<Utils::
 }
 
 SnapcraftGenericPartNode::SnapcraftGenericPartNode(const QString &partName, const Utils::FileName &folderPath)
-    : ProjectExplorer::FolderNode (folderPath, ProjectExplorer::ProjectNodeType, partName)
+    : ProjectExplorer::FolderNode (folderPath, ProjectExplorer::FolderNodeType, partName)
 {
     scheduleProjectScan();
 
@@ -197,6 +197,42 @@ void SnapcraftGenericPartNode::removeFolderNodes(QList<Utils::FileName> &dirs)
             visParent.nodes()[0]->removeFolderNodes(vis.nodes());
         }
     }
+}
+
+QList<ProjectExplorer::ProjectAction> SnapcraftGenericPartNode::supportedActions(ProjectExplorer::Node *node) const
+{
+    static const QList<ProjectExplorer::ProjectAction> fileActions {
+        ProjectExplorer::ProjectAction::Rename,
+        ProjectExplorer::ProjectAction::RemoveFile
+    };
+    static const QList<ProjectExplorer::ProjectAction> folderActions {
+        ProjectExplorer::ProjectAction::AddNewFile,
+        ProjectExplorer::ProjectAction::RemoveFile
+    };
+    switch (node->nodeType()) {
+    case ProjectExplorer::FileNodeType:
+        return fileActions;
+    case ProjectExplorer::FolderNodeType:
+    case ProjectExplorer::ProjectNodeType:
+        return folderActions;
+    default:
+        return ProjectExplorer::FolderNode::supportedActions(node);
+    }
+}
+
+bool SnapcraftGenericPartNode::addFiles(const QStringList &, QStringList *)
+{
+    return true;
+}
+
+bool SnapcraftGenericPartNode::removeFiles(const QStringList &, QStringList *)
+{
+    return true;
+}
+
+bool SnapcraftGenericPartNode::deleteFiles(const QStringList &)
+{
+    return true;
 }
 
 void SnapcraftGenericPartNode::scanProjectDirectory()
@@ -278,7 +314,7 @@ ProjectExplorer::FolderNode *SnapcraftGenericPartNode::createOrFindFolder(const 
         }
 
         //does not exist lets create a new one
-        ProjectExplorer::FolderNode *fNode = new ProjectExplorer::FolderNode(currentPath, ProjectExplorer::FolderNodeType, folderName);
+        ProjectExplorer::FolderNode *fNode = new SnapcraftGenericPartFolderNode(currentPath, ProjectExplorer::FolderNodeType, folderName);
         currFolder->addFolderNodes({fNode});
         currFolder = fNode;
 
@@ -356,6 +392,21 @@ void FindNodesForFolderVisitor::visitFolderNode(ProjectExplorer::FolderNode *fol
 {
     if (m_folder == folderNode->filePath())
         m_nodes.append(folderNode);
+}
+
+bool SnapcraftGenericPartFolderNode::addFiles(const QStringList &, QStringList *)
+{
+    return true;
+}
+
+bool SnapcraftGenericPartFolderNode::removeFiles(const QStringList &, QStringList *)
+{
+    return true;
+}
+
+bool SnapcraftGenericPartFolderNode::deleteFiles(const QStringList &)
+{
+    return true;
 }
 
 

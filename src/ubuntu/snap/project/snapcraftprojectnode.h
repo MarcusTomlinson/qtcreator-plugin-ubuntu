@@ -83,6 +83,17 @@ private:
     SnapcraftProject *m_rootProject = nullptr;
 };
 
+class SnapcraftGenericPartFolderNode : public ProjectExplorer::FolderNode
+{
+public:
+
+    using ProjectExplorer::FolderNode::FolderNode;
+
+    // FolderNode interface
+    virtual bool addFiles(const QStringList &filePaths, QStringList *notAdded) override;
+    virtual bool removeFiles(const QStringList &filePaths, QStringList *notRemoved) override;
+    virtual bool deleteFiles(const QStringList &filePaths) override;
+};
 
 class SnapcraftGenericPartNode : public ProjectExplorer::FolderNode
 {
@@ -97,6 +108,12 @@ public:
     using ProjectExplorer::FolderNode::removeFolderNodes;
     void removeFolderNodes (QList<Utils::FileName> &dirs);
 
+    // Node interface
+    virtual QList<ProjectExplorer::ProjectAction> supportedActions(ProjectExplorer::Node *node) const override;
+    virtual bool addFiles(const QStringList &filePaths, QStringList *notAdded) override;
+    virtual bool removeFiles(const QStringList &filePaths, QStringList *notRemoved) override;
+    virtual bool deleteFiles(const QStringList &filePaths) override;
+
 protected:
     ProjectExplorer::FolderNode *createOrFindFolder (const QStringList &folder);
     void scanProjectDirectory ();
@@ -104,7 +121,6 @@ protected:
 private:
     bool m_scanning = false;
     QFileSystemWatcher m_watcher;
-
 };
 
 } // namespace Internal
