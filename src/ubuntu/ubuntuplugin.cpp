@@ -54,6 +54,7 @@
 #include <ubuntu/wizards/ubuntuprojectmigrationwizard.h>
 
 #include <ubuntu/snap/project/snapcraftprojectmanager.h>
+#include <ubuntu/snap/project/snapcraftbuildconfigurationfactory.h>
 
 #include "ubuntujsextension.h"
 
@@ -173,10 +174,13 @@ bool UbuntuPlugin::initialize(const QStringList &arguments, QString *errorString
 
     // Handle new project type files
     addAutoReleasedObject(new UbuntuProjectManager);
-    addAutoReleasedObject(new SnapcraftProjectManager);
     addAutoReleasedObject(new UbuntuLocalRunConfigurationFactory);
     addAutoReleasedObject(new UbuntuRemoteRunControlFactory);
     addAutoReleasedObject(new UbuntuLocalRunControlFactory);
+
+
+    addAutoReleasedObject(new SnapcraftProjectManager);
+    addAutoReleasedObject(new SnapcraftBuildConfigurationFactory);
 
     // Build support
     addAutoReleasedObject(new ClickToolChainFactory);

@@ -394,9 +394,10 @@ const char CHROOT_UPDATE_LIST_SCRIPT[] = "%1/ubuntu/scripts/qtc_chroot_get_upgra
 
 
 //Snapcraft
-const char SNAPCRAFT_PROJECT_MIMETYPE[] = "application/x-snapcraft";
-const char SNAPCRAFT_PROJECT_ID[] = "UbuntuProjectManager.SnapcraftProject";
+const char SNAPCRAFT_PROJECT_MIMETYPE[]       = "application/x-snapcraft";
+const char SNAPCRAFT_PROJECT_ID[            ] = "SnapcraftProjectManager.SnapcraftProject";
 const char SNAPCRAFT_PROJECT_PROJECTCONTEXT[] = "SnapcraftProject.ProjectContext";
+const char SNAPCRAFT_BUILDCONFIGURATION_ID[]  = "SnapcraftProjectManager.SnapcraftBuildconfiguration.Id";
 
 
 
