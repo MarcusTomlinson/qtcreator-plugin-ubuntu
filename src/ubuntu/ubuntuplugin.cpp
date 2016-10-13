@@ -55,6 +55,7 @@
 
 #include <ubuntu/snap/project/snapcraftprojectmanager.h>
 #include <ubuntu/snap/project/snapcraftbuildconfigurationfactory.h>
+#include <ubuntu/snap/project/snapcraftbuildstepfactory.h>
 
 #include "ubuntujsextension.h"
 
@@ -181,6 +182,7 @@ bool UbuntuPlugin::initialize(const QStringList &arguments, QString *errorString
 
     addAutoReleasedObject(new SnapcraftProjectManager);
     addAutoReleasedObject(new SnapcraftBuildConfigurationFactory);
+    addAutoReleasedObject(new SnapcraftBuildStepFactory);
 
     // Build support
     addAutoReleasedObject(new ClickToolChainFactory);

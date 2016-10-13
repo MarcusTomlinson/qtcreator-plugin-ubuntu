@@ -2,11 +2,15 @@
 
 #include "snapcraftproject.h"
 #include "snapcraftbuildconfiguration.h"
+#include "snapcraftrsyncstep.h"
+#include "snapcraftstep.h"
 #include <ubuntu/ubuntuconstants.h>
 
 #include <projectexplorer/target.h>
 #include <projectexplorer/kit.h>
 #include <projectexplorer/projectmacroexpander.h>
+#include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/buildsteplist.h>
 
 #include <coreplugin/documentmanager.h>
 #include <utils/mimetypes/mimedatabase.h>
@@ -71,6 +75,10 @@ ProjectExplorer::BuildConfiguration *SnapcraftBuildConfigurationFactory::create(
 
     conf->setDisplayName(info->displayName);
     conf->setBuildDirectory(info->buildDirectory);
+
+    ProjectExplorer::BuildStepList *bs = conf->stepList(ProjectExplorer::Constants::BUILDSTEPS_BUILD);
+    bs->insertStep(0, new SnapcraftRsyncStep(bs));
+    bs->insertStep(1, new SnapcraftStep(bs));
 
     return conf;
 }

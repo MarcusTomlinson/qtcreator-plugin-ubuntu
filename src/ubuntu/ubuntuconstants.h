@@ -398,6 +398,8 @@ const char SNAPCRAFT_PROJECT_MIMETYPE[]       = "application/x-snapcraft";
 const char SNAPCRAFT_PROJECT_ID[            ] = "SnapcraftProjectManager.SnapcraftProject";
 const char SNAPCRAFT_PROJECT_PROJECTCONTEXT[] = "SnapcraftProject.ProjectContext";
 const char SNAPCRAFT_BUILDCONFIGURATION_ID[]  = "SnapcraftProjectManager.SnapcraftBuildconfiguration.Id";
+const char SNAPCRAFT_RSYNCBUILSSTEP_ID[]      = "SnapcraftProjectManager.SnapcraftRsyncStep.Id";
+const char SNAPCRAFT_BUILDSTEP_ID[]           = "SnapcraftProjectManager.SnapcraftStep.Id";
 
 
 
