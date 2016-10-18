@@ -23,7 +23,9 @@
 #include <projectexplorer/nodesvisitor.h>
 #include <yaml-cpp/node/node.h>
 
-#include <QFileSystemWatcher>
+#include <QPointer>
+
+class QFileSystemWatcher;
 
 namespace Ubuntu {
 namespace Internal {
@@ -75,12 +77,14 @@ class SnapcraftGenericPartNode;
 class SnapcraftProjectNode : public ProjectExplorer::ProjectNode
 {
 public:
-    SnapcraftProjectNode(SnapcraftProject *rootProject, const Utils::FileName &projectFilePath);
+    SnapcraftProjectNode(SnapcraftProject *rootProject, const Utils::FileName &projectFilePath, QFileSystemWatcher *watcher);
+    ~SnapcraftProjectNode();
 
     bool syncFromYAMLNode(YAML::Node rootNode);
 
 private:
     SnapcraftProject *m_rootProject = nullptr;
+    QPointer<QFileSystemWatcher> m_watcher;
 };
 
 class SnapcraftGenericPartFolderNode : public ProjectExplorer::FolderNode
@@ -98,9 +102,11 @@ public:
 class SnapcraftGenericPartNode : public ProjectExplorer::FolderNode
 {
 public:
-    SnapcraftGenericPartNode(const QString &partName, const Utils::FileName &folderPath);
+    SnapcraftGenericPartNode(const QString &partName, const Utils::FileName &folderPath, QFileSystemWatcher *watcher);
+    ~SnapcraftGenericPartNode();
 
-    void scheduleProjectScan ();
+    void maybeScheduleProjectScan(const QString &changedPath);
+    void scheduleProjectScan();
 
     using ProjectExplorer::FolderNode::removeFileNodes;
     void removeFileNodes (const QList<Utils::FileName> &files);
@@ -120,7 +126,8 @@ protected:
 
 private:
     bool m_scanning = false;
-    QFileSystemWatcher m_watcher;
+    QMetaObject::Connection m_watcherConnection;
+    QPointer<QFileSystemWatcher> m_watcher;
 };
 
 } // namespace Internal

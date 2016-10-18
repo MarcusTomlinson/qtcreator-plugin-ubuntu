@@ -10,7 +10,8 @@ SOURCES += \
     $$PWD/project/snapcraftbuildconfiguration.cpp \
     $$PWD/project/snapcraftrsyncstep.cpp \
     $$PWD/project/snapcraftstep.cpp \
-    $$PWD/project/snapcraftbuildstepfactory.cpp
+    $$PWD/project/snapcraftbuildstepfactory.cpp \
+    $$PWD/settings/snapcraftkitinformation.cpp
 
 HEADERS += \
     $$PWD/project/snapcraftproject.h \
@@ -21,5 +22,6 @@ HEADERS += \
     $$PWD/project/snapcraftbuildconfiguration.h \
     $$PWD/project/snapcraftrsyncstep.h \
     $$PWD/project/snapcraftstep.h \
-    $$PWD/project/snapcraftbuildstepfactory.h
+    $$PWD/project/snapcraftbuildstepfactory.h \
+    $$PWD/settings/snapcraftkitinformation.h
 

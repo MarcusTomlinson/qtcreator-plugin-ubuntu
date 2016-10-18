@@ -41,9 +41,11 @@ using namespace Ubuntu::Internal;
 
 SnapcraftProject::SnapcraftProject(SnapcraftProjectManager *manager, const Utils::FileName &fileName)
     : m_manager(manager),
-      m_fileName(fileName) {
+      m_fileName(fileName),
+      m_watcher(new QFileSystemWatcher)
+{
 
-    setId(Constants::UBUNTUPROJECT_ID);
+    setId(Constants::SNAPCRAFT_PROJECT_ID);
 
     setProjectContext(Core::Context(Constants::SNAPCRAFT_PROJECT_PROJECTCONTEXT));
 
@@ -54,10 +56,17 @@ SnapcraftProject::SnapcraftProject(SnapcraftProjectManager *manager, const Utils
 
     m_file->setFilePath(fileName);
 
-    m_rootNode = QSharedPointer<SnapcraftProjectNode>(new SnapcraftProjectNode(this, fileName));
+    m_rootNode = QSharedPointer<SnapcraftProjectNode>(new SnapcraftProjectNode(this, fileName, &m_watcher));
 
     ProjectExplorer::FileNode *projectFileNode = new ProjectExplorer::FileNode(fileName, ProjectExplorer::ProjectFileType, false);
     m_rootNode->addFileNodes({projectFileNode});
+
+    connect(m_file, &SnapcraftProjectFile::changed, this, &SnapcraftProject::asyncUpdate);
+
+    //we show magic directories that are not listed in the snapcraft.yaml file, therefore we need to watch the directory
+    //if one of those is changed or removed
+    m_watcher.addPath(projectDirectory().toFileInfo().absoluteFilePath());
+    connect(&m_watcher, &QFileSystemWatcher::directoryChanged, this, &SnapcraftProject::maybeUpdate);
 
     QMetaObject::invokeMethod(this, "asyncUpdate", Qt::QueuedConnection);
 }
@@ -126,14 +135,22 @@ QString SnapcraftProject::shadowBuildDirectory(const QString &proFilePath
 
 void SnapcraftProject::asyncUpdate()
 {
+    qDebug()<<"Syncing from yaml";
     try {
         YAML::Node yaml = YAML::LoadFile(m_fileName.toString().toStdString());
         if (!m_rootNode->syncFromYAMLNode(yaml)) {
-            qDebug()<<"ZOOOONK";
+            qDebug()<<"Invalid YAML file";
         }
     } catch (const YAML::Exception &e) {
         qDebug() << e.what();
     }
 
     emit displayNameChanged();
+}
+
+void SnapcraftProject::maybeUpdate(const QString &pathChanged)
+{
+    if (QFileInfo(pathChanged) == projectDirectory().toFileInfo()) {
+        asyncUpdate();
+    }
 }

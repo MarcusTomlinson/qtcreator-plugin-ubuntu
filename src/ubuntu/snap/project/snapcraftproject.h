@@ -29,6 +29,7 @@
 #include <projectexplorer/project.h>
 
 #include <QPointer>
+#include <QFileSystemWatcher>
 
 #include <yaml-cpp/node/node.h>
 
@@ -70,6 +71,7 @@ public:
 
 protected slots:
     void asyncUpdate ();
+    void maybeUpdate (const QString &pathChanged);
 
 private:
     SnapcraftProjectManager *m_manager;
@@ -78,6 +80,7 @@ private:
 
     Utils::FileName m_fileName;
     QSharedPointer<SnapcraftProjectNode> m_rootNode;
+    QFileSystemWatcher m_watcher;
 };
 }
 }

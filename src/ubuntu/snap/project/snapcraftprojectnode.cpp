@@ -19,10 +19,13 @@
 #include "snapcraftprojectnode.h"
 
 #include <projectexplorer/nodesvisitor.h>
+#include <coreplugin/fileiconprovider.h>
+#include <ubuntu/ubuntuconstants.h>
 
 #include <QFileInfo>
 #include <QDir>
 #include <QTimer>
+#include <QFileSystemWatcher>
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -32,15 +35,47 @@
 namespace Ubuntu {
 namespace Internal {
 
-SnapcraftProjectNode::SnapcraftProjectNode(SnapcraftProject *rootProject, const Utils::FileName &projectFilePath)
+static QIcon generateIcon(const QString &overlay) {
+    const QSize desiredSize = QSize(16, 16);
+
+    const QPixmap overlayPixmap(overlay);
+    const QIcon overlayIcon(overlayPixmap.scaled(12, 12));
+    const QPixmap pixmap
+            = Core::FileIconProvider::overlayIcon(QStyle::SP_DirIcon, overlayIcon, desiredSize);
+
+    QIcon result;
+    result.addPixmap(pixmap);
+
+    return result;
+}
+
+static QIcon generateProjectIcon () {
+    static QIcon projectIcon;
+    if (projectIcon.isNull())
+        projectIcon = generateIcon(QString::fromLatin1(Constants::UBUNTU_ICON));
+
+    return projectIcon;
+}
+
+SnapcraftProjectNode::SnapcraftProjectNode(SnapcraftProject *rootProject, const Utils::FileName &projectFilePath, QFileSystemWatcher *watcher)
     : ProjectExplorer::ProjectNode (projectFilePath),
-      m_rootProject(rootProject)
+      m_rootProject(rootProject),
+      m_watcher(watcher)
 {
     setDisplayName(projectFilePath.parentDir().toString());
+    setIcon(generateProjectIcon());
+}
+
+SnapcraftProjectNode::~SnapcraftProjectNode()
+{
+    if (m_watcher) {
+
+    }
 }
 
 bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
 {
+    qDebug()<<"Sync from YAML node";
     try {
         QString displayName = QString::fromStdString(rootNode["name"].as<std::string>());
         setDisplayName(displayName);
@@ -87,12 +122,32 @@ bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
                     nodesToRemove << n;
                 }
 
-                SnapcraftGenericPartNode *partNode =  new SnapcraftGenericPartNode(partName, sourcePath);
+                SnapcraftGenericPartNode *partNode =  new SnapcraftGenericPartNode(partName, sourcePath, m_watcher);
                 nodesToAdd << partNode;
             }
         }
 
+
+        //snapcraft has magic directories, like setup, we want to show in the project tree
+        QStringList magicSnapcraftDirs{
+            QStringLiteral("setup")
+        };
+
+        for (const QString &magicDir: magicSnapcraftDirs) {
+            Utils::FileName dirPath = filePath().parentDir().appendPath(magicDir);
+            if (dirPath.exists()) {
+                partsFromYaml << magicDir;
+                if(!existingParts.contains(magicDir)) {
+                    SnapcraftGenericPartNode *partNode =  new SnapcraftGenericPartNode(magicDir, dirPath, m_watcher);
+                    nodesToAdd << partNode;
+                }
+            }
+        }
+
         QSet<QString> obsoleteParts = existingParts.toSet() - partsFromYaml.toSet();
+        qDebug()<<"Parts in yaml"<<partsFromYaml;
+        qDebug()<<"Currently known parts"<<existingParts;
+        qDebug()<<"Parts now obsolete: "<<obsoleteParts;
         for (const auto &part : obsoleteParts) {
             int idx = existingParts.indexOf(part);
             if (idx >= 0)
@@ -127,19 +182,45 @@ static void enumChild(const QDir &dir, QSet<Utils::FileName> &dirs, QSet<Utils::
     }
 }
 
-SnapcraftGenericPartNode::SnapcraftGenericPartNode(const QString &partName, const Utils::FileName &folderPath)
+SnapcraftGenericPartNode::SnapcraftGenericPartNode(const QString &partName, const Utils::FileName &folderPath, QFileSystemWatcher *watcher)
     : ProjectExplorer::FolderNode (folderPath, ProjectExplorer::FolderNodeType, partName)
+    , m_watcher(watcher)
 {
     scheduleProjectScan();
 
-    if (m_watcher.addPath(folderPath.toString())) {
+    setIcon(generateProjectIcon());
+
+    if (watcher->addPath(folderPath.toString())) {
         qDebug()<<"Added"<<folderPath.toString()<<"to watcher";
     } else {
         qDebug()<<"Failed to add"<<folderPath.toString()<<"to watcher";
     }
-    QObject::connect(&m_watcher, &QFileSystemWatcher::directoryChanged, [this](const QString &){
-        scheduleProjectScan();
+    m_watcherConnection = QObject::connect(watcher, &QFileSystemWatcher::directoryChanged, [this](const QString &path){
+        maybeScheduleProjectScan(path);
     });
+}
+
+SnapcraftGenericPartNode::~SnapcraftGenericPartNode()
+{
+    //@BUG the watcher is still watching all the subdirs and files!
+    if (m_watcher) {
+        QString myPath = filePath().toFileInfo().absoluteFilePath();
+        QStringList watched = m_watcher->directories();
+        QStringList toRemove;
+        for(const QString &path: watched) {
+            if(path.startsWith(myPath))
+                toRemove << path;
+        }
+        m_watcher->removePaths(toRemove);
+        QObject::disconnect(m_watcherConnection);
+    }
+}
+
+void SnapcraftGenericPartNode::maybeScheduleProjectScan(const QString &changedPath)
+{
+    Utils::FileName changed = Utils::FileName::fromString(changedPath);
+    if (filePath().toFileInfo() == changed.toFileInfo())
+        scheduleProjectScan();
 }
 
 void SnapcraftGenericPartNode::scheduleProjectScan()
@@ -193,7 +274,7 @@ void SnapcraftGenericPartNode::removeFolderNodes(QList<Utils::FileName> &dirs)
         this->accept(&visParent);
 
         if(visParent.nodes().size()) {
-            m_watcher.removePath(f.toFileInfo().absoluteFilePath());
+            m_watcher->removePath(f.toFileInfo().absoluteFilePath());
             visParent.nodes()[0]->removeFolderNodes(vis.nodes());
         }
     }
@@ -320,7 +401,7 @@ ProjectExplorer::FolderNode *SnapcraftGenericPartNode::createOrFindFolder(const 
 
         watches << currentPath.toFileInfo().absoluteFilePath();
     }
-    qDebug()<<"Failed to add watches: "<<m_watcher.addPaths(watches);
+    qDebug()<<"Failed to add watches: "<<m_watcher->addPaths(watches);
     return currFolder;
 }
 

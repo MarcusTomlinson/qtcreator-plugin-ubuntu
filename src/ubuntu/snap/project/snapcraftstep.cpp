@@ -2,9 +2,12 @@
 #include "snapcraftproject.h"
 #include "snapcraftbuildconfiguration.h"
 
+#include <ubuntu/snap/settings/snapcraftkitinformation.h>
+
 #include <ubuntu/ubuntuconstants.h>
 
 #include <projectexplorer/target.h>
+#include <utils/environment.h>
 
 namespace Ubuntu {
 namespace Internal {
@@ -28,15 +31,13 @@ bool SnapcraftStep::init(QList<const ProjectExplorer::BuildStep *> &)
     if(!bc)
         return false;
 
-    //TODO take snapcraft binary from Kit
-    //TODO force snapcraft to use the qmake from the Kit by setting up the env correctly
-
     Utils::FileName snapcraftBin = Utils::FileName::fromString(Constants::UBUNTU_SCRIPTPATH);
     snapcraftBin = snapcraftBin.appendPath(QString::fromLatin1("run_snapcraft.py"));
 
     ProjectExplorer::ProcessParameters *param = processParameters();
     param->setWorkingDirectory(bc->buildDirectory().toUserOutput());
     param->setCommand(snapcraftBin.toUserOutput());
+    param->setArguments(QString::fromLatin1("-s '%1'").arg(snapcraftBin.toFileInfo().absoluteFilePath()));
     param->setMacroExpander(bc->macroExpander());
     param->setEnvironment(bc->environment());
 
@@ -46,6 +47,20 @@ bool SnapcraftStep::init(QList<const ProjectExplorer::BuildStep *> &)
 ProjectExplorer::BuildStepConfigWidget *SnapcraftStep::createConfigWidget()
 {
     return new ProjectExplorer::SimpleBuildStepConfigWidget(this);
+}
+
+Utils::FileName SnapcraftStep::snapcraftCommand() const
+{
+    Utils::Environment env = Utils::Environment::systemEnvironment();
+    Utils::FileName fallback = env.searchInPath(QStringLiteral("snapcraft"));
+    if (!target())
+        return fallback;
+
+    Utils::FileName bin = SnapcraftKitInformation::snapcraftPath(target()->kit());
+    if (!bin.exists())
+        return fallback;
+
+    return bin;
 }
 
 } // namespace Internal

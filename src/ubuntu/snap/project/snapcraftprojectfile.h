@@ -33,6 +33,14 @@ class SnapcraftProjectFile : public TextEditor::TextDocument
     Q_OBJECT
 public:
     SnapcraftProjectFile(Core::Id id = Core::Id());
+
+    // IDocument interface
+    virtual ReloadBehavior reloadBehavior(ChangeTrigger state, ChangeType type) const override;
+    virtual bool reload(QString *errorString, ReloadFlag flag, ChangeType type) override;
+
+signals:
+    void changed ();
+
 };
 }
 }

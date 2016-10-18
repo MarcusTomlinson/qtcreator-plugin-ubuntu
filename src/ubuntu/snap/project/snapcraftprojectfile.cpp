@@ -24,3 +24,19 @@ SnapcraftProjectFile::SnapcraftProjectFile(Core::Id id)
     : TextEditor::TextDocument(id)
 {
 }
+
+Core::IDocument::ReloadBehavior SnapcraftProjectFile::reloadBehavior(Core::IDocument::ChangeTrigger state, Core::IDocument::ChangeType type) const
+{
+    Q_UNUSED(state)
+    Q_UNUSED(type)
+    return BehaviorSilent;
+}
+
+bool SnapcraftProjectFile::reload(QString *errorString, Core::IDocument::ReloadFlag flag, Core::IDocument::ChangeType type)
+{
+    if (type != TypePermissions) {
+        emit changed();
+    }
+
+    return TextDocument::reload(errorString, flag, type);
+}

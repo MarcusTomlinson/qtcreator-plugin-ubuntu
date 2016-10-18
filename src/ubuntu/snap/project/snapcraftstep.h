@@ -20,6 +20,8 @@ public:
     virtual bool init(QList<const ProjectExplorer::BuildStep *> &earlierSteps) override;
     virtual ProjectExplorer::BuildStepConfigWidget *createConfigWidget() override;
 
+    Utils::FileName snapcraftCommand () const;
+
 protected:
     SnapcraftStep(ProjectExplorer::BuildStepList *bsl);
     SnapcraftStep(ProjectExplorer::BuildStepList *bsl, SnapcraftStep *bs);
