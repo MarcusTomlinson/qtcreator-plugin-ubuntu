@@ -20,6 +20,8 @@ if options.snapcraft is None:
 if not os.path.isfile(options.snapcraft) or not os.access(options.snapcraft, os.X_OK):
     parser.error("-s must specify a executable file.")
 
+print("Using snapcraft from :"+options.snapcraft)
+
 ret = subprocess.call([options.snapcraft, "clean"])
 if ret != 0:
     sys.exit(ret)

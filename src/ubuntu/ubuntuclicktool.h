@@ -86,6 +86,7 @@ public:
     static QString findOrCreateToolWrapper(const QString &tool, const UbuntuClickTool::Target &target);
     static QString findOrCreateQMakeWrapper(const UbuntuClickTool::Target &target);
     static QString findOrCreateMakeWrapper(const UbuntuClickTool::Target &target);
+    static Utils::FileName findOrCreateSnapcraftWrapper(const UbuntuClickTool::Target &target);
     static QString mapIncludePathsForCMake(const ProjectExplorer::Kit *k, const QString &in);
     static QString hostArchitecture ();
     static bool    compatibleWithHostArchitecture (const QString &targetArch);

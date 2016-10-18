@@ -471,6 +471,11 @@ QString UbuntuClickTool::findOrCreateMakeWrapper (const UbuntuClickTool::Target 
     return UbuntuClickTool::findOrCreateToolWrapper(QStringLiteral("make"),target);
 }
 
+Utils::FileName UbuntuClickTool::findOrCreateSnapcraftWrapper(const UbuntuClickTool::Target &target)
+{
+    return Utils::FileName::fromString(UbuntuClickTool::findOrCreateToolWrapper(QStringLiteral("snapcraft"),target));
+}
+
 QString UbuntuClickTool::mapIncludePathsForCMake(const ProjectExplorer::Kit *k, const QString &in)
 {
     if (in.isEmpty())

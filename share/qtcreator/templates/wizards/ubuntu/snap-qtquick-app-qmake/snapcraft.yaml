@@ -15,7 +15,7 @@ parts:
     source: %{ProjectNameL}/
     qt-version: qt5
     options: ["CONFIG+=snapcraft"]
-    project-files: [untitled.pro]
+    project-files: [%{ProjectNameL}]
     build-packages:
       - build-essential
       - qtbase5-dev

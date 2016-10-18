@@ -5,7 +5,8 @@
 #include "ubuntuclickdialog.h"
 #include "ubuntuqtversion.h"
 #include "settings.h"
-#include "device/container/containerdevice.h"
+#include <ubuntu/device/container/containerdevice.h>
+#include <ubuntu/snap/settings/snapcraftkitinformation.h>
 
 #include <coreplugin/icore.h>
 #include <projectexplorer/kitmanager.h>
@@ -508,6 +509,8 @@ void UbuntuKitManager::fixKit(ProjectExplorer::Kit *k)
     if(ProjectExplorer::SysRootKitInformation::sysRoot(k).isEmpty()) {
         ProjectExplorer::SysRootKitInformation::setSysRoot(k,Utils::FileName::fromString(UbuntuClickTool::targetBasePath(tc->clickTarget())));
     }
+
+    SnapcraftKitInformation::setSnapcraftPath(k, UbuntuClickTool::findOrCreateSnapcraftWrapper(tc->clickTarget()));
 
     //make sure we point to a ubuntu device
     Core::Id devId = ProjectExplorer::DeviceTypeKitInformation::deviceTypeId(k);
