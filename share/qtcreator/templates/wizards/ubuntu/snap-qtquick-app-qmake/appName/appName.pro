@@ -16,33 +16,16 @@ QML_FILES += $$files(*.qml,true) \
 
 CONF_FILES +=  %{ProjectNameL}.png
 
-AP_TEST_FILES += tests/autopilot/run \
-                 $$files(tests/*.py,true)
-
 #show all the files in QtCreator
 OTHER_FILES += $${CONF_FILES} \
                $${QML_FILES} \
-               $${AP_TEST_FILES} \
                %{ProjectNameL}.desktop \
                %{ProjectNameL}.wrapper
 
 snapcraft {
-    #specify where the config files are installed to
-    config_files.path = /setup/gui
-    config_files.files += $${CONF_FILES}
-    INSTALLS+=config_files
-
-    #install the desktop file
-    desktop_file.path = /setup/gui
-    desktop_file.files = $$PWD/%{ProjectNameL}.desktop
-    desktop_file.CONFIG += no_check_exist
-    INSTALLS+=desktop_file
-
-    # Default rules for deployment.
-
     wrapper.files = %{ProjectNameL}.wrapper
-    wrapper.path  = /deploy/bin
+    wrapper.path  = /bin
 
-    target.path = /deploy/bin
+    target.path = /bin
     INSTALLS+=target wrapper
 }

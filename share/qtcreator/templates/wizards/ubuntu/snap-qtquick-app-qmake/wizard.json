@@ -1,13 +1,13 @@
 {
     "version": 1,
-    "supportedProjectTypes": [ "Qt4ProjectManager.Qt4Project" ],
+    "supportedProjectTypes": [ "SnapcraftProjectManager.SnapcraftProject" ],
     "id": "A.QtQuick Snappy Application",
     "category": "B.Snapcraft",
     "trDescription": "Creates a experimental C++ Ubuntu snappy application project with a sample UI containing a Label and a Button.",
     "trDisplayName": "QtQuick App with QML Ubuntu UI",
     "trDisplayCategory": "Snapcraft",
     "icon": "../share/ubuntu.png",
-    "enabled": "%{JS: [ %{Plugins} ].indexOf('QmakeProjectManager') >= 0}",
+    "enabled": "%{JS: [ %{Plugins} ].indexOf('Ubuntu') >= 0}",
 
     "options":
     [
@@ -62,13 +62,8 @@
             "data":
             [
                 {
-                    "source": "appName.pro",
-                    "target": "%{ProjectFile}",
-                    "openAsProject": true
-                },
-                {
                     "source": "snapcraft.yaml",
-                    "openInEditor": true
+                    "openAsProject": true
                 },
                 {
                     "source": "appName/main.cpp",
@@ -81,12 +76,12 @@
                     "openInEditor": true
                 },
                 {
-                    "source": "appName/appName.desktop",
-                    "target": "%{ProjectDirectory}/%{ProjectNameL}/%{ProjectNameL}.desktop"
+                    "source": "setup/gui/appName.desktop",
+                    "target": "%{ProjectDirectory}/setup/gui/%{ProjectNameL}.desktop"
                 },
                 {
-                    "source": "appName/appName.png",
-                    "target": "%{ProjectDirectory}/%{ProjectNameL}/%{ProjectNameL}.png"
+                    "source": "setup/gui/appName.png",
+                    "target": "%{ProjectDirectory}/setup/gui/%{ProjectNameL}.png"
                 },
                 {
                     "source": "appName/appName.pro",

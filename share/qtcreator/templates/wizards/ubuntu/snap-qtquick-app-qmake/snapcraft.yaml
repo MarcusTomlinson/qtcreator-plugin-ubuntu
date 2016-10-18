@@ -11,13 +11,19 @@ apps:
 
 parts:
   %{ProjectNameL}:
-    plugin: dump
-    source: deploy/
+    plugin: qmake
+    source: %{ProjectNameL}/
+    qt-version: qt5
+    options: ["CONFIG+=snapcraft"]
+    project-files: [untitled.pro]
+    build-packages:
+      - build-essential
+      - qtbase5-dev
+      - qt5-qmake
     stage-packages:
       - ubuntu-sdk-libs
       - qtubuntu-desktop
       - qtmir-desktop
       - mir-graphics-drivers-desktop
-
-
+    after: [qt5conf]
 
