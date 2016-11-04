@@ -30,6 +30,7 @@ public:
     explicit UbuntuJsExtension(QObject *parent = 0);
 
     Q_INVOKABLE QString developerId() const;
+    Q_INVOKABLE bool supportsSnappy() const;
 };
 
 }}

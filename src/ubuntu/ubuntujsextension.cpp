@@ -15,8 +15,11 @@
  *
  * Author: Benjamin Zeller <benjamin.zeller@canonical.com>
  */
+
 #include "ubuntujsextension.h"
 #include <ubuntu/ubuntubzr.h>
+#include <ubuntu/ubuntuversion.h>
+#include <ubuntu/ubuntuconstants.h>
 
 namespace Ubuntu {
 namespace Internal {
@@ -41,6 +44,14 @@ QString UbuntuJsExtension::developerId() const
     }
 
     return maintainer;
+}
+
+bool UbuntuJsExtension::supportsSnappy() const
+{
+    UbuntuVersion *v = UbuntuVersion::instance();
+    if (v->isValid())
+        return v->supportsSnappy();
+    return false;
 }
 
 }}

@@ -7,11 +7,11 @@
     "trDisplayName": "QtQuick App with QML Ubuntu UI",
     "trDisplayCategory": "Snapcraft",
     "icon": "../share/ubuntu.png",
-    "enabled": "%{JS: [ %{Plugins} ].indexOf('Ubuntu') >= 0}",
+    "enabled": "%{JS: [ %{Plugins} ].indexOf('Ubuntu') >= 0 && Ubuntu.supportsSnappy()}",
 
     "options":
     [
-        { "key": "ProjectFile", "value": "%{JS: Util.fileName('%{ProjectDirectory}/%{ProjectName}', 'pro')}" },
+        { "key": "ProjectFile", "value": "%{JS: Util.fileName('%{ProjectDirectory}/snapcraft','yaml')}" },
         { "key": "ProjectNameL", "value": "%{JS: \"%{ProjectName}\".toLowerCase()}" },
         { "key": "CppFileName", "value": "%{JS: 'main.' + Util.preferredSuffix('text/x-c++src')}" },
         { "key": "IsTopLevelProject", "value": "%{JS: !'%{Exists:ProjectExplorer.Profile.Ids}'}" }

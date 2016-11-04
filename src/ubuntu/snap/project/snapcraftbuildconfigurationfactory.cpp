@@ -11,6 +11,7 @@
 #include <projectexplorer/projectmacroexpander.h>
 #include <projectexplorer/projectexplorerconstants.h>
 #include <projectexplorer/buildsteplist.h>
+#include <projectexplorer/kitinformation.h>
 
 #include <coreplugin/documentmanager.h>
 #include <utils/mimetypes/mimedatabase.h>
@@ -35,6 +36,10 @@ QList<ProjectExplorer::BuildInfo *> SnapcraftBuildConfigurationFactory::availabl
     if (qobject_cast<SnapcraftProject *>(parent->project()))
         return {};
 
+    //restrict this to local devices type kits for now
+    if (ProjectExplorer::DeviceKitInformation::deviceId(parent->kit()) != ProjectExplorer::Constants::DESKTOP_DEVICE_ID)
+        return {};
+
     QList<ProjectExplorer::BuildInfo *> infoList;
     ProjectExplorer::BuildInfo *info = createBuildInfo(parent->kit(), parent->project()->projectFilePath().toString());
     if (info)
@@ -56,6 +61,10 @@ int SnapcraftBuildConfigurationFactory::priority(const ProjectExplorer::Kit *, c
 QList<ProjectExplorer::BuildInfo *> SnapcraftBuildConfigurationFactory::availableSetups(const ProjectExplorer::Kit *k, const QString &projectPath) const
 {
     Utils::MimeDatabase db;
+
+    //restrict this to local devices type kits for now
+    if (ProjectExplorer::DeviceKitInformation::deviceId(k) != ProjectExplorer::Constants::DESKTOP_DEVICE_ID)
+        return {};
 
     auto mimeType = db.mimeTypeForFile(projectPath);
     if (!mimeType.matchesName(Constants::SNAPCRAFT_PROJECT_MIMETYPE))

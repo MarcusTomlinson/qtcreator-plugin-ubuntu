@@ -27,28 +27,30 @@ namespace Ubuntu {
 namespace Internal {
 
 
-class UbuntuVersion : public QObject
+class UbuntuVersion
 {
-    Q_OBJECT
-
 public:
     explicit UbuntuVersion();
     
 public slots:
-    QString id() { return m_id; }
-    QString release() { return m_release; }
-    QString codename() { return m_codename; }
-    QString description() { return m_description; }
+    bool isValid () const { return m_valid; }
+    QString id() const { return m_id; }
+    QString release() const { return m_release; }
+    QString codename() const { return m_codename; }
+    QString description() const { return m_description; }
+    bool supportsSnappy () const;
 
-    Core::FeatureSet features();
+    static UbuntuVersion *instance( );
 
-    static UbuntuVersion *fromLsbFile( const QString &fileName );
+protected:
+    void initFromLsbFile( );
 
 protected:
     QString m_id;
     QString m_release;
     QString m_codename;
     QString m_description;
+    bool m_valid = false;
 };
 }
 }

@@ -52,11 +52,13 @@
 #include <ubuntu/wizards/ubuntuprojectapplicationwizard.h>
 #include <ubuntu/wizards/ubuntufirstrunwizard.h>
 #include <ubuntu/wizards/ubuntuprojectmigrationwizard.h>
+#include <ubuntu/ubuntuversion.h>
 
 #include <ubuntu/snap/project/snapcraftprojectmanager.h>
 #include <ubuntu/snap/project/snapcraftbuildconfigurationfactory.h>
 #include <ubuntu/snap/project/snapcraftbuildstepfactory.h>
 #include <ubuntu/snap/settings/snapcraftkitinformation.h>
+#include <ubuntu/snap/project/snaprunconfiguration.h>
 
 #include "ubuntujsextension.h"
 
@@ -181,11 +183,14 @@ bool UbuntuPlugin::initialize(const QStringList &arguments, QString *errorString
     addAutoReleasedObject(new UbuntuLocalRunControlFactory);
 
 
-    addAutoReleasedObject(new SnapcraftProjectManager);
-    addAutoReleasedObject(new SnapcraftBuildConfigurationFactory);
-    addAutoReleasedObject(new SnapcraftBuildStepFactory);
+    if (UbuntuVersion::instance()->supportsSnappy()) {
+        addAutoReleasedObject(new SnapcraftProjectManager);
+        addAutoReleasedObject(new SnapcraftBuildConfigurationFactory);
+        addAutoReleasedObject(new SnapcraftBuildStepFactory);
+        addAutoReleasedObject(new SnapRunConfigurationFactory);
 
-    ProjectExplorer::KitManager::registerKitInformation(new SnapcraftKitInformation);
+        ProjectExplorer::KitManager::registerKitInformation(new SnapcraftKitInformation);
+    }
 
     // Build support
     addAutoReleasedObject(new ClickToolChainFactory);

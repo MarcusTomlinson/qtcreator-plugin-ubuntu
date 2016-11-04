@@ -39,6 +39,10 @@
 using namespace Ubuntu;
 using namespace Ubuntu::Internal;
 
+enum {
+    debug = 0
+};
+
 SnapcraftProject::SnapcraftProject(SnapcraftProjectManager *manager, const Utils::FileName &fileName)
     : m_manager(manager),
       m_fileName(fileName),
@@ -135,17 +139,55 @@ QString SnapcraftProject::shadowBuildDirectory(const QString &proFilePath
 
 void SnapcraftProject::asyncUpdate()
 {
-    qDebug()<<"Syncing from yaml";
+    if(debug) qDebug()<<"Syncing from yaml";
+
+    QString oldDisplayName = displayName();
+
     try {
         YAML::Node yaml = YAML::LoadFile(m_fileName.toString().toStdString());
         if (!m_rootNode->syncFromYAMLNode(yaml)) {
-            qDebug()<<"Invalid YAML file";
+            if(debug) qDebug()<<"Invalid YAML file";
         }
+
+        QStringList commandList;
+
+        try {
+            YAML::Node commands = yaml["apps"];
+            if (!commands.IsMap()) {
+                if(debug) qDebug()<<"apps is not a map";
+            } else {
+                for (auto it = commands.begin(); it != commands.end(); ++it) {
+                    if(!it->second.IsMap() || it->second["daemon"])
+                        continue;
+
+                    commandList << QString::fromStdString(it->first.as<std::string>());
+                }
+            }
+
+            if(yaml["version"]) {
+                QString snapVer = QString::fromStdString(yaml["version"].as<std::string>());
+                if (snapVer != m_snapVersion) {
+                    if(debug) qDebug()<<"Snap version is"<<snapVer;
+                    m_snapVersion = snapVer;
+                    emit snapVersionChanged();
+                }
+            }
+
+        } catch (const YAML::Exception &e) {
+            if(debug) qDebug()<<"Error while parsing the command list: "<<e.what();
+        }
+
+        if (m_commands != commandList) {
+            m_commands = commandList;
+            emit commandListChanged(m_commands);
+        }
+
     } catch (const YAML::Exception &e) {
-        qDebug() << e.what();
+        if(debug) qDebug() << e.what();
     }
 
-    emit displayNameChanged();
+    if (oldDisplayName != displayName())
+        emit displayNameChanged();
 }
 
 void SnapcraftProject::maybeUpdate(const QString &pathChanged)

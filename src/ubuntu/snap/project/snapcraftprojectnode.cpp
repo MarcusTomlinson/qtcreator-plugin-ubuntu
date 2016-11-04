@@ -35,6 +35,11 @@
 namespace Ubuntu {
 namespace Internal {
 
+enum {
+    debug = 0
+};
+
+
 static QIcon generateIcon(const QString &overlay) {
     const QSize desiredSize = QSize(16, 16);
 
@@ -62,7 +67,7 @@ SnapcraftProjectNode::SnapcraftProjectNode(SnapcraftProject *rootProject, const 
       m_rootProject(rootProject),
       m_watcher(watcher)
 {
-    setDisplayName(projectFilePath.parentDir().toString());
+    setDisplayName(projectFilePath.parentDir().toFileInfo().fileName());
     setIcon(generateProjectIcon());
 }
 
@@ -75,14 +80,14 @@ SnapcraftProjectNode::~SnapcraftProjectNode()
 
 bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
 {
-    qDebug()<<"Sync from YAML node";
+    if(debug) qDebug()<<"Sync from YAML node";
     try {
         QString displayName = QString::fromStdString(rootNode["name"].as<std::string>());
         setDisplayName(displayName);
 
         YAML::Node parts = rootNode["parts"];
         if (!parts.IsMap()) {
-            qDebug()<<"Parts is not a map";
+            if(debug) qDebug()<<"Parts is not a map";
             return false;
         }
 
@@ -145,9 +150,13 @@ bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
         }
 
         QSet<QString> obsoleteParts = existingParts.toSet() - partsFromYaml.toSet();
-        qDebug()<<"Parts in yaml"<<partsFromYaml;
-        qDebug()<<"Currently known parts"<<existingParts;
-        qDebug()<<"Parts now obsolete: "<<obsoleteParts;
+
+        if(debug) {
+            qDebug()<<"Parts in yaml"<<partsFromYaml;
+            qDebug()<<"Currently known parts"<<existingParts;
+            qDebug()<<"Parts now obsolete: "<<obsoleteParts;
+        }
+
         for (const auto &part : obsoleteParts) {
             int idx = existingParts.indexOf(part);
             if (idx >= 0)
@@ -158,7 +167,7 @@ bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
         removeFolderNodes(nodesToRemove);
         addFolderNodes(nodesToAdd);
     } catch (const YAML::Exception &e) {
-        qDebug()<<"ERRROR ERROR ERROR "<<e.what();
+        if(debug) qDebug()<<"ERRROR ERROR ERROR "<<e.what();
         return false;
     }
 
@@ -191,9 +200,9 @@ SnapcraftGenericPartNode::SnapcraftGenericPartNode(const QString &partName, cons
     setIcon(generateProjectIcon());
 
     if (watcher->addPath(folderPath.toString())) {
-        qDebug()<<"Added"<<folderPath.toString()<<"to watcher";
+        if(debug) qDebug()<<"Added"<<folderPath.toString()<<"to watcher";
     } else {
-        qDebug()<<"Failed to add"<<folderPath.toString()<<"to watcher";
+        if(debug) qDebug()<<"Failed to add"<<folderPath.toString()<<"to watcher";
     }
     m_watcherConnection = QObject::connect(watcher, &QFileSystemWatcher::directoryChanged, [this](const QString &path){
         maybeScheduleProjectScan(path);
@@ -228,7 +237,7 @@ void SnapcraftGenericPartNode::scheduleProjectScan()
     if (m_scanning)
         return;
 
-    qDebug()<<"Scheduling Project scan";
+    if(debug)  qDebug()<<"Scheduling Project scan";
 
     m_scanning = true;
 
@@ -236,7 +245,7 @@ void SnapcraftGenericPartNode::scheduleProjectScan()
     rescanTimer->setSingleShot(true);
     rescanTimer->start(0);
     QObject::connect(rescanTimer, &QTimer::timeout, [this, rescanTimer](){
-        qDebug()<<"Starting Project scan";
+        if(debug) qDebug()<<"Starting Project scan";
         delete rescanTimer;
         this->scanProjectDirectory();
 
@@ -335,10 +344,12 @@ void SnapcraftGenericPartNode::scanProjectDirectory()
     QList<Utils::FileName> dirsToRemove  = (oldDirs - newDirs).toList();
     QSet<Utils::FileName> dirsToAdd     = newDirs - oldDirs;
 
-    qDebug()<<"Removing dirs " <<dirsToRemove;
-    qDebug()<<"Adding dirs   " <<dirsToAdd;
-    qDebug()<<"Removing files" <<filesToRemove;
-    qDebug()<<"Adding files  " <<filesToAdd;
+    if(debug) {
+        qDebug()<<"Removing dirs " <<dirsToRemove;
+        qDebug()<<"Adding dirs   " <<dirsToAdd;
+        qDebug()<<"Removing files" <<filesToRemove;
+        qDebug()<<"Adding files  " <<filesToAdd;
+    }
 
     removeFileNodes(filesToRemove.toList());
     removeFolderNodes(dirsToRemove);
@@ -401,7 +412,8 @@ ProjectExplorer::FolderNode *SnapcraftGenericPartNode::createOrFindFolder(const 
 
         watches << currentPath.toFileInfo().absoluteFilePath();
     }
-    qDebug()<<"Failed to add watches: "<<m_watcher->addPaths(watches);
+
+    m_watcher->addPaths(watches);
     return currFolder;
 }
 

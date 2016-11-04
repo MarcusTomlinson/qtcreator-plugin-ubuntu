@@ -21,61 +21,59 @@
 #include <QFile>
 #include <QStringList>
 
-using namespace Ubuntu::Internal;
+namespace Ubuntu {
+namespace Internal {
+
+Q_GLOBAL_STATIC(UbuntuVersion, g_instance);
+
+const char  DISTRIB_ID[] = "DISTRIB_ID=";
+const char  DISTRIB_CODENAME[] = "DISTRIB_CODENAME=";
+const char  DISTRIB_RELEASE[] = "DISTRIB_RELEASE=";
+const char  DISTRIB_DESCRIPTION[] = "DISTRIB_DESCRIPTION=";
+const char  LSB_RELEASE[] = "/etc/lsb-release";
 
 UbuntuVersion::UbuntuVersion()
 {
-
+    initFromLsbFile();
 }
 
-Core::FeatureSet UbuntuVersion::features() {
-    Core::FeatureSet retval;
-
-    QString cName = codename();
-    if (cName==QLatin1String(Constants::PRECISE)) {
-        retval |= Core::FeatureSet(Constants::FEATURE_UBUNTU_PRECISE);
-    } else if (cName==QLatin1String(Constants::QUANTAL)) {
-        retval |= Core::FeatureSet(Constants::FEATURE_UBUNTU_QUANTAL);
-    } else if (cName==QLatin1String(Constants::RARING)) {
-        retval |= Core::FeatureSet(Constants::FEATURE_UBUNTU_RARING);
-    } else if (cName==QLatin1String(Constants::SAUCY)) {
-        retval |= Core::FeatureSet(Constants::FEATURE_UBUNTU_SAUCY);
-        retval |= Core::FeatureSet(Constants::FEATURE_UNITY_SCOPE);
-    } else if  (cName==QLatin1String(Constants::TRUSTY)) {
-        retval |= Core::FeatureSet(Constants::FEATURE_UBUNTU_TRUSTY);
-        retval |= Core::FeatureSet(Constants::FEATURE_UNITY_SCOPE);
-    } else if (cName==QLatin1String(Constants::UTOPIC)) {
-        retval |= Core::FeatureSet(Constants::FEATURE_UBUNTU_UTOPIC);
-        retval |= Core::FeatureSet(Constants::FEATURE_UNITY_SCOPE);
-    }
-    return retval;
-}
-
-UbuntuVersion *UbuntuVersion::fromLsbFile(const QString &fileName)
+bool UbuntuVersion::supportsSnappy() const
 {
-    QFile lsbRelease(fileName);
+    if (m_valid)
+        return codename() == Constants::XENIAL;
+    return false;
+}
+
+UbuntuVersion *UbuntuVersion::instance()
+{
+    return g_instance();
+}
+
+void UbuntuVersion::initFromLsbFile()
+{
+    QFile lsbRelease(QString::fromLatin1(LSB_RELEASE));
     if (lsbRelease.open(QIODevice::ReadOnly)) {
         QByteArray data = lsbRelease.readAll();
         lsbRelease.close();
 
-        UbuntuVersion *ver = new UbuntuVersion;
-
         foreach(QString line, QString::fromLatin1(data).split(QLatin1String("\n"))) {
-            if (line.startsWith(QLatin1String(Constants::DISTRIB_ID))) {
-                ver->m_id = line.replace(QLatin1String(Constants::DISTRIB_ID),QLatin1String(""));
+            if (line.startsWith(QLatin1String(DISTRIB_ID))) {
+                m_id = line.replace(QLatin1String(DISTRIB_ID),QLatin1String(""));
 
-            } else if (line.startsWith(QLatin1String(Constants::DISTRIB_RELEASE))) {
-                ver->m_release = line.replace(QLatin1String(Constants::DISTRIB_RELEASE),QLatin1String(""));
+            } else if (line.startsWith(QLatin1String(DISTRIB_RELEASE))) {
+                m_release = line.replace(QLatin1String(DISTRIB_RELEASE),QLatin1String(""));
 
-            } else if (line.startsWith(QLatin1String(Constants::DISTRIB_CODENAME))) {
-                ver->m_codename = line.replace(QLatin1String(Constants::DISTRIB_CODENAME),QLatin1String(""));
+            } else if (line.startsWith(QLatin1String(DISTRIB_CODENAME))) {
+                m_codename = line.replace(QLatin1String(DISTRIB_CODENAME),QLatin1String(""));
 
-            } else if (line.startsWith(QLatin1String(Constants::DISTRIB_DESCRIPTION))) {
-                ver->m_description = line.replace(QLatin1String(Constants::DISTRIB_DESCRIPTION),QLatin1String(""));
+            } else if (line.startsWith(QLatin1String(DISTRIB_DESCRIPTION))) {
+                m_description = line.replace(QLatin1String(DISTRIB_DESCRIPTION),QLatin1String(""));
             }
         }
 
-        return ver;
+        m_valid = true;
     }
-    return 0;
 }
+
+}}
+

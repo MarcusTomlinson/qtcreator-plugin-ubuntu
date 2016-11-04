@@ -37,7 +37,7 @@
 namespace Ubuntu {
 namespace Internal {
 
-const char * PACKAGE_NAME_REGEX = "^Snapped ([\\S]+\\.snap)$";
+static const char * PACKAGE_NAME_REGEX = "^Snapped ([\\S]+\\.snap)$";
 
 SnapcraftPackageStep::SnapcraftPackageStep(ProjectExplorer::BuildStepList *bsl)
     : ProjectExplorer::BuildStep (bsl, Constants::UBUNTU_SNAP_PACKAGESTEP_ID)

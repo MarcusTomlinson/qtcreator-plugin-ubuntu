@@ -50,6 +50,7 @@ public:
     const UbuntuClickTool::Target &clickTarget () const;
 
     static ProjectExplorer::Abi architectureNameToAbi ( const QString &arch );
+    static QString abiToArchitectureName ( const ProjectExplorer::Abi &abi );
     static QList<QString> supportedArchitectures ();
 
     QString remoteCompilerCommand () const;

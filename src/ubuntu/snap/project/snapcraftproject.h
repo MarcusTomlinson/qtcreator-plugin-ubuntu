@@ -47,6 +47,10 @@ public:
     SnapcraftProject(SnapcraftProjectManager *manager, const Utils::FileName &fileName);
 
     QString displayName() const override;
+    QString snapVersion() const{
+        return m_snapVersion;
+    }
+
     ProjectExplorer::IProjectManager *projectManager() const override;
 
     ProjectExplorer::ProjectNode *rootProjectNode() const override;
@@ -58,6 +62,10 @@ public:
 
     QString filesFileName() const {
         return m_fileName.toString();
+    }
+
+    QStringList commands () const {
+        return m_commands;
     }
 
     // Project interface
@@ -73,9 +81,15 @@ protected slots:
     void asyncUpdate ();
     void maybeUpdate (const QString &pathChanged);
 
+signals:
+    void commandListChanged (const QStringList &commands);
+    void snapVersionChanged ();
+
 private:
     SnapcraftProjectManager *m_manager;
     QString m_projectName;
+    QStringList m_commands;
+    QString m_snapVersion;
     QPointer<SnapcraftProjectFile> m_file;
 
     Utils::FileName m_fileName;

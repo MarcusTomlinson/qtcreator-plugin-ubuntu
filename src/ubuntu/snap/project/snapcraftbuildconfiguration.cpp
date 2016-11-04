@@ -1,6 +1,7 @@
 #include "snapcraftbuildconfiguration.h"
 
 #include <ubuntu/ubuntuconstants.h>
+#include <QDebug>
 
 namespace Ubuntu {
 namespace Internal {
@@ -24,7 +25,9 @@ bool SnapcraftBuildConfiguration::fromMap(const QVariantMap &map)
 
 QVariantMap SnapcraftBuildConfiguration::toMap() const
 {
-    return ProjectExplorer::BuildConfiguration::toMap();
+    QVariantMap data = ProjectExplorer::BuildConfiguration::toMap();
+    qDebug()<<"Storing ID: "<<ProjectExplorer::idFromMap(data);
+    return data;
 }
 
 ProjectExplorer::NamedWidget *SnapcraftBuildConfiguration::createConfigWidget()

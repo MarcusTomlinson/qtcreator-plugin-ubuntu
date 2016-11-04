@@ -62,6 +62,11 @@ static QMap <QString,ProjectExplorer::Abi> init_architectures()
                                                            ProjectExplorer::Abi::GenericLinuxFlavor,
                                                            ProjectExplorer::Abi::ElfFormat,
                                                            64));
+    map.insert(QLatin1String("arm64") , ProjectExplorer::Abi(ProjectExplorer::Abi::ArmArchitecture,
+                                                             ProjectExplorer::Abi::LinuxOS,
+                                                             ProjectExplorer::Abi::GenericLinuxFlavor,
+                                                             ProjectExplorer::Abi::ElfFormat,
+                                                             64));
     return map;
 }
 
@@ -130,6 +135,15 @@ ProjectExplorer::Abi ClickToolChain::architectureNameToAbi(const QString &arch)
     return clickArchitectures[arch];
 }
 
+QString ClickToolChain::abiToArchitectureName(const ProjectExplorer::Abi &abi)
+{
+    for (auto i = clickArchitectures.constBegin(); i != clickArchitectures.constEnd(); i++){
+        if (i.value() == abi)
+            return i.key();
+    }
+    return QString("unknown");
+}
+
 QList<QString> ClickToolChain::supportedArchitectures()
 {
     return clickArchitectures.keys();
@@ -158,7 +172,13 @@ QString ClickToolChain::gnutriplet(const ProjectExplorer::Abi &abi)
 {
     switch(abi.architecture()) {
         case ProjectExplorer::Abi::ArmArchitecture:
-            return QLatin1String("arm-linux-gnueabihf");
+            switch(abi.wordWidth())
+            {
+                case 32:
+                    return QLatin1String("arm-linux-gnueabihf");
+                case 64:
+                    return QLatin1String("aarch64-linux-gnu");
+            }
             break;
         case ProjectExplorer::Abi::X86Architecture:
             switch(abi.wordWidth())

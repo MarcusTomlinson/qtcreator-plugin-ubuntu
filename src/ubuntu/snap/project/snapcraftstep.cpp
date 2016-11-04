@@ -3,25 +3,81 @@
 #include "snapcraftbuildconfiguration.h"
 
 #include <ubuntu/snap/settings/snapcraftkitinformation.h>
-
 #include <ubuntu/ubuntuconstants.h>
+#include <ubuntu/clicktoolchain.h>
 
 #include <projectexplorer/target.h>
 #include <utils/environment.h>
 
+#include <QRegularExpression>
+
+
 namespace Ubuntu {
 namespace Internal {
+
+static const char * PACKAGE_NAME_REGEX = "^Snapped ([\\S]+\\.snap)$";
 
 SnapcraftStep::SnapcraftStep(ProjectExplorer::BuildStepList *bsl)
     : ProjectExplorer::AbstractProcessStep(bsl, Constants::SNAPCRAFT_BUILDSTEP_ID)
 {
     setDefaultDisplayName(tr("Snapcraft"));
+
+    connect(qobject_cast<SnapcraftProject *>(target()->project()), &SnapcraftProject::snapVersionChanged,
+            this, &SnapcraftStep::packagePathChanged);
+    connect(qobject_cast<SnapcraftProject *>(target()->project()), &SnapcraftProject::displayNameChanged,
+            this, &SnapcraftStep::packagePathChanged);
 }
 
 SnapcraftStep::SnapcraftStep(ProjectExplorer::BuildStepList *bsl, SnapcraftStep *bs)
     : ProjectExplorer::AbstractProcessStep(bsl, bs)
 {
+    connect(qobject_cast<SnapcraftProject *>(target()->project()), &SnapcraftProject::snapVersionChanged,
+            this, &SnapcraftStep::packagePathChanged);
+    connect(qobject_cast<SnapcraftProject *>(target()->project()), &SnapcraftProject::displayNameChanged,
+            this, &SnapcraftStep::packagePathChanged);
+}
 
+void SnapcraftStep::stdOutput(const QString &line)
+{
+    m_lastLine = line;
+    ProjectExplorer::AbstractProcessStep::stdOutput(line);
+}
+
+void SnapcraftStep::processStarted()
+{
+    m_packagePath.clear();
+    emit packagePathChanged();
+
+    ProjectExplorer::AbstractProcessStep::processStarted();
+}
+
+void SnapcraftStep::processFinished(int exitCode, QProcess::ExitStatus status)
+{
+    Utils::FileName newPackagePath;
+
+    ProjectExplorer::AbstractProcessStep::processFinished(exitCode, status);
+    if (status == QProcess::NormalExit && exitCode == 0) {
+        QRegularExpression exp((QLatin1String(PACKAGE_NAME_REGEX)));
+        QRegularExpressionMatch m = exp.match(m_lastLine);
+        if(m.hasMatch()) {
+            ProjectExplorer::BuildConfiguration *bc = target()->activeBuildConfiguration();
+            if(bc)
+                newPackagePath = bc->buildDirectory().appendPath(m.captured(1));
+        }
+    }
+
+    if (m_packagePath != newPackagePath) {
+        m_packagePath = newPackagePath;
+        emit packagePathChanged();
+    }
+}
+
+bool SnapcraftStep::processSucceeded(int exitCode, QProcess::ExitStatus status)
+{
+    if (!ProjectExplorer::AbstractProcessStep::processSucceeded(exitCode, status))
+        return false;
+
+    return m_packagePath.toFileInfo().exists();
 }
 
 bool SnapcraftStep::init(QList<const ProjectExplorer::BuildStep *> &)
@@ -61,6 +117,22 @@ Utils::FileName SnapcraftStep::snapcraftCommand() const
         return fallback;
 
     return bin;
+}
+
+Utils::FileName SnapcraftStep::packagePath() const
+{
+    if (!m_packagePath.isEmpty())
+        return m_packagePath;
+
+    ProjectExplorer::BuildConfiguration *bc = target()->activeBuildConfiguration();
+    SnapcraftProject *pro = qobject_cast<SnapcraftProject *>(target()->project());
+    ProjectExplorer::ToolChain *tc = ProjectExplorer::ToolChainKitInformation::toolChain(target()->kit());
+    if(bc && pro && tc && !pro->displayName().isEmpty() && !pro->snapVersion().isEmpty())
+        return bc->buildDirectory().appendPath(QStringLiteral("%1_%2_%3.snap")
+                                                         .arg(pro->displayName())
+                                                         .arg(pro->snapVersion())
+                                                         .arg(ClickToolChain::abiToArchitectureName(tc->targetAbi())));
+    return Utils::FileName();
 }
 
 } // namespace Internal

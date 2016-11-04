@@ -260,22 +260,20 @@ const char  FEATURE_UBUNTU_SAUCY[] = "Ubuntu.Wizards.FeatureUbuntuSaucy";
 const char  FEATURE_UBUNTU_TRUSTY[] = "Ubuntu.Wizards.FeatureUbuntuTrusty";
 const char  FEATURE_UBUNTU_UTOPIC[] = "Ubuntu.Wizards.FeatureUbuntuUtopic";
 
-const char  DISTRIB_ID[] = "DISTRIB_ID=";
-const char  DISTRIB_CODENAME[] = "DISTRIB_CODENAME=";
-const char  DISTRIB_RELEASE[] = "DISTRIB_RELEASE=";
-const char  DISTRIB_DESCRIPTION[] = "DISTRIB_DESCRIPTION=";
-const char  LSB_RELEASE[] = "/etc/lsb-release";
-
-const char  PRECISE[] = "precise";
-const char  QUANTAL[] = "quantal";
-const char  RARING[] = "raring";
-const char  SAUCY[] = "saucy";
-const char  TRUSTY[] = "trusty";
-const char  UTOPIC[] = "utopic";
-
 const char  PLATFORM_DESKTOP[] = "Desktop";
 const char  PLATFORM_DESKTOP_DISPLAYNAME[] = "Ubuntu %0";
+
+const QString PRECISE (QStringLiteral("precise"));
+const QString QUANTAL (QStringLiteral("quantal"));
+const QString RARING  (QStringLiteral("raring"));
+const QString SAUCY   (QStringLiteral("saucy"));
+const QString TRUSTY  (QStringLiteral("trusty"));
+const QString UTOPIC  (QStringLiteral("utopic"));
+const QString VIVID   (QStringLiteral("vivid"));
+const QString WILY    (QStringLiteral("wily"));
 */
+
+const QString XENIAL  (QStringLiteral("xenial"));
 
 const char  TASK_DEVICE_SCRIPT[] = "Ubuntu.Task.DeviceScript";
 
@@ -400,6 +398,7 @@ const char SNAPCRAFT_PROJECT_PROJECTCONTEXT[] = "SnapcraftProject.ProjectContext
 const char SNAPCRAFT_BUILDCONFIGURATION_ID[]  = "SnapcraftProjectManager.SnapcraftBuildconfiguration.Id";
 const char SNAPCRAFT_RSYNCBUILSSTEP_ID[]      = "SnapcraftProjectManager.SnapcraftRsyncStep.Id";
 const char SNAPCRAFT_BUILDSTEP_ID[]           = "SnapcraftProjectManager.SnapcraftStep.Id";
+const char SNAP_RUNCONFIGURATION_ID[]         = "SnapcraftProjectManager.SnapRunConfiguration.Id";
 
 
 
