@@ -26,6 +26,8 @@
 #include <projectexplorer/kitinformation.h>
 #include <projectexplorer/toolchain.h>
 #include <projectexplorer/projectmacroexpander.h>
+#include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/taskhub.h>
 #include <qmljs/qmljssimplereader.h>
 #include <qtsupport/qtkitinformation.h>
 #include <qtsupport/qtsupportconstants.h>
@@ -146,7 +148,10 @@ void SnapcraftProject::asyncUpdate()
     try {
         YAML::Node yaml = YAML::LoadFile(m_fileName.toString().toStdString());
         if (!m_rootNode->syncFromYAMLNode(yaml)) {
-            if(debug) qDebug()<<"Invalid YAML file";
+            ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error,
+                                              QString::fromLatin1("Error while parsing snapcraft.yaml: file is invalid"),
+                                              ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM,
+                                              projectFilePath());
         }
 
         QStringList commandList;
@@ -154,7 +159,10 @@ void SnapcraftProject::asyncUpdate()
         try {
             YAML::Node commands = yaml["apps"];
             if (!commands.IsMap()) {
-                if(debug) qDebug()<<"apps is not a map";
+                ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error,
+                                                  QString::fromLatin1("Error while parsing snapcraft.yaml: apps is not a map"),
+                                                  ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM,
+                                                  projectFilePath());
             } else {
                 for (auto it = commands.begin(); it != commands.end(); ++it) {
                     if(!it->second.IsMap() || it->second["daemon"])
@@ -174,7 +182,11 @@ void SnapcraftProject::asyncUpdate()
             }
 
         } catch (const YAML::Exception &e) {
-            if(debug) qDebug()<<"Error while parsing the command list: "<<e.what();
+            ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error,
+                                              QString::fromLatin1("Error while parsing the command list: %1").arg(QString::fromLatin1(e.what())),
+                                              ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM,
+                                              projectFilePath(),
+                                              e.mark.line);
         }
 
         if (m_commands != commandList) {
@@ -183,7 +195,11 @@ void SnapcraftProject::asyncUpdate()
         }
 
     } catch (const YAML::Exception &e) {
-        if(debug) qDebug() << e.what();
+        ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error,
+                                          QString::fromLatin1("Error while parsing the project file: %1").arg(QString::fromLatin1(e.what())),
+                                          ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM,
+                                          projectFilePath(),
+                                          e.mark.line);
     }
 
     if (oldDisplayName != displayName())

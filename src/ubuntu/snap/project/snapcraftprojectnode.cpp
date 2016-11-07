@@ -17,8 +17,11 @@
  */
 
 #include "snapcraftprojectnode.h"
+#include "snapcraftproject.h"
 
 #include <projectexplorer/nodesvisitor.h>
+#include <projectexplorer/projectexplorerconstants.h>
+#include <projectexplorer/taskhub.h>
 #include <coreplugin/fileiconprovider.h>
 #include <ubuntu/ubuntuconstants.h>
 
@@ -73,9 +76,6 @@ SnapcraftProjectNode::SnapcraftProjectNode(SnapcraftProject *rootProject, const 
 
 SnapcraftProjectNode::~SnapcraftProjectNode()
 {
-    if (m_watcher) {
-
-    }
 }
 
 bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
@@ -87,7 +87,10 @@ bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
 
         YAML::Node parts = rootNode["parts"];
         if (!parts.IsMap()) {
-            if(debug) qDebug()<<"Parts is not a map";
+            ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error,
+                                              QString::fromLatin1("Error while parsing snapcraft.yaml: parts is not a map"),
+                                              ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM,
+                                              m_rootProject->projectFilePath());
             return false;
         }
 
@@ -167,7 +170,11 @@ bool SnapcraftProjectNode::syncFromYAMLNode(YAML::Node rootNode)
         removeFolderNodes(nodesToRemove);
         addFolderNodes(nodesToAdd);
     } catch (const YAML::Exception &e) {
-        if(debug) qDebug()<<"ERRROR ERROR ERROR "<<e.what();
+        ProjectExplorer::TaskHub::addTask(ProjectExplorer::Task::Error,
+                                          QString::fromLatin1("Error while parsing snapcraft.yaml: %1").arg(QString::fromLatin1(e.what())),
+                                          ProjectExplorer::Constants::TASK_CATEGORY_BUILDSYSTEM,
+                                          m_rootProject->projectFilePath(),
+                                          e.mark.line);
         return false;
     }
 
