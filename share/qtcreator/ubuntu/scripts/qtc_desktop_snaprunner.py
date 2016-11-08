@@ -30,6 +30,7 @@ import sys
 parser = argparse.ArgumentParser(description="SDK snap launcher")
 parser.add_argument('snap_package',action="store")
 parser.add_argument('snap_command',action='store')
+parser.add_argument('--devmode'   ,action='store_true')
 
 options, args = parser.parse_known_args()
 
@@ -48,7 +49,11 @@ sys.stdout.flush()
 sys.stderr.flush()
 
 #ok lets install the snap package
-ret = subprocess.call(["snap", "install", options.snap_package, "--dangerous"], stdout=sys.stdout, stderr=sys.stderr)
+snaparg = ["snap", "install", options.snap_package, "--dangerous"]
+if options.devmode:
+    print("Enabling devmode\n")
+    snaparg += ["--devmode"]
+ret = subprocess.call(snaparg, stdout=sys.stdout, stderr=sys.stderr)
 if ret != 0:
     sys.exit(ret)
 
@@ -71,6 +76,7 @@ signal.signal(signal.SIGTERM, signalHandler)
 signal.signal(signal.SIGHUP,  signalHandler)
 
 #start the actual app
+print("Command args are: "+str(args)+"\n")
 if not stopped:
     proc = subprocess.Popen(["snap", "run", app_info[0]+"."+options.snap_command]+args, stdout=sys.stdout, stderr=sys.stderr)
     ret = proc.wait()

@@ -18,17 +18,20 @@
 #include <QFileInfo>
 #include <QFormLayout>
 #include <QComboBox>
+#include <QCheckBox>
 
 namespace Ubuntu {
 namespace Internal {
 
 const QString COMMAND_KEY = QStringLiteral("SnapProjectManager.SnapRunConfiguration.SnapCommand");
+const QString DEVMODE_KEY = QStringLiteral("SnapProjectManager.SnapRunConfiguration.SnapDevMode");
 const QString WORKINGDIRECTORYASPECT_ID = QStringLiteral("SnapProjectManager.SnapRunConfiguration.WorkingDirectoryAspect");
 const QString ARGUMENTASPECT_ID = QStringLiteral("SnapProjectManager.SnapRunConfiguration.ArgumentAspect");
 const QString TERMINALASPECT_ID = QStringLiteral("SnapProjectManager.SnapRunConfiguration.TerminalAspect");
 
 SnapRunConfiguration::SnapRunConfiguration(ProjectExplorer::Target *parent)
     : ProjectExplorer::RunConfiguration(parent, Constants::SNAP_RUNCONFIGURATION_ID)
+    , m_useDevMode(true)
     , m_workingDirectoryAspect(new ProjectExplorer::WorkingDirectoryAspect(this, WORKINGDIRECTORYASPECT_ID))
     , m_argumentAspect(new ProjectExplorer::ArgumentsAspect(this, ARGUMENTASPECT_ID))
     , m_terminalAspect(new ProjectExplorer::TerminalAspect(this, TERMINALASPECT_ID))
@@ -87,6 +90,7 @@ bool SnapRunConfiguration::fromMap(const QVariantMap &map)
         return false;
 
     m_command = map.value(COMMAND_KEY, QString()).toString();
+    m_useDevMode = map.value(DEVMODE_KEY, true).toBool();
     return true;
 }
 
@@ -94,6 +98,7 @@ QVariantMap SnapRunConfiguration::toMap() const
 {
     QVariantMap map = ProjectExplorer::RunConfiguration::toMap();
     map.insert(COMMAND_KEY, m_command);
+    map.insert(DEVMODE_KEY, m_useDevMode);
     return map;
 }
 
@@ -131,6 +136,9 @@ ProjectExplorer::Runnable SnapRunConfiguration::runnable() const
         m_command
     };
 
+    if (m_useDevMode)
+        args.prepend(QStringLiteral("--devmode"));
+
     ProjectExplorer::StandardRunnable r;
     r.executable = Utils::FileName::fromString(Constants::UBUNTU_SCRIPTPATH).appendPath(QStringLiteral("qtc_desktop_snaprunner.py")).toString();;
     r.workingDirectory = m_workingDirectoryAspect->workingDirectory().toString();
@@ -167,6 +175,16 @@ void SnapRunConfiguration::updateConfiguration()
 
 }
 
+bool SnapRunConfiguration::useDevMode() const
+{
+    return m_useDevMode;
+}
+
+void SnapRunConfiguration::setUseDevMode(bool useDevMode)
+{
+    m_useDevMode = useDevMode;
+}
+
 SnapRunConfigurationWidget::SnapRunConfigurationWidget(SnapRunConfiguration *config)
     : QWidget (nullptr),
       m_rc(config),
@@ -188,10 +206,16 @@ SnapRunConfigurationWidget::SnapRunConfigurationWidget(SnapRunConfiguration *con
     if (idx >= 0)
         m_commandsBox->setCurrentIndex(idx);
 
+    m_devmodeCheckBox = new QCheckBox(tr("Use devmode"), this);
+    m_devmodeCheckBox->setChecked(config->useDevMode());
+    connect(m_devmodeCheckBox, &QCheckBox::stateChanged,
+            this, &SnapRunConfigurationWidget::devModeStateChanged);
+
     layout->addRow(tr("Command:"), m_commandsBox);
     config->extraAspect<ProjectExplorer::ArgumentsAspect>()->addToMainConfigurationWidget(this, layout);
     config->extraAspect<ProjectExplorer::WorkingDirectoryAspect>()->addToMainConfigurationWidget(this,layout);
     config->extraAspect<ProjectExplorer::TerminalAspect>()->addToMainConfigurationWidget(this,layout);
+    layout->addRow(QStringLiteral(""), m_devmodeCheckBox);
 
     if(config->target()) {
         connect(qobject_cast<SnapcraftProject*>(config->target()->project()), &SnapcraftProject::commandListChanged,
@@ -224,6 +248,14 @@ void SnapRunConfigurationWidget::updateComboBox()
         m_commandsBox->setCurrentIndex(idx);
     else
         m_commandsBox->setCurrentIndex(0);
+}
+
+void SnapRunConfigurationWidget::devModeStateChanged(int state)
+{
+    if (state == Qt::Checked)
+        m_rc->setUseDevMode(true);
+    else
+        m_rc->setUseDevMode(false);
 }
 
 void SnapRunConfigurationWidget::commandSelected(const int index)
