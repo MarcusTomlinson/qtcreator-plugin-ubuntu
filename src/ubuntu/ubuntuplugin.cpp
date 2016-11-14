@@ -91,6 +91,8 @@
 
 #include <coreplugin/icore.h>
 #include <stdint.h>
+#include <unistd.h>
+#include <sys/types.h>
 
 
 using namespace Ubuntu;
@@ -123,6 +125,11 @@ bool UbuntuPlugin::initialize(const QStringList &arguments, QString *errorString
     defaultFont.setFamily(QStringLiteral("Ubuntu"));
     defaultFont.setWeight(QFont::Light);
 
+
+    if (::getuid() == 0) {
+        criticalError(tr("\nThe Ubuntu SDK can not be used as superuser."));
+        return false;
+    }
     if (QStandardPaths::findExecutable(QStringLiteral("lxc")).isEmpty()) {
         criticalError(tr("\nLxd is not installed properly.\nIt is required for the Ubuntu-SDK-IDE to work."));
         return false;
@@ -419,7 +426,7 @@ bool UbuntuPlugin::checkContainerSetup()
             case ERR_NO_ACCESS:
                     //the tool tells us that we have no access to the LXD server
                     criticalError(tr("The current user can not access the LXD server which is required for the Ubuntu SDK.\n"
-                                     "Make sure the user is part of the lxd group and restart the IDE."));
+                                     "Make sure the user is part of the lxd group, relogin and restart the IDE."));
                 break;
             case ERR_NO_BRIDGE:
                 if (Settings::askForContainerSetup()) {

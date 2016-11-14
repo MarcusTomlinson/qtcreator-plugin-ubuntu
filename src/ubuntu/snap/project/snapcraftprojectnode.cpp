@@ -420,7 +420,9 @@ ProjectExplorer::FolderNode *SnapcraftGenericPartNode::createOrFindFolder(const 
         watches << currentPath.toFileInfo().absoluteFilePath();
     }
 
-    m_watcher->addPaths(watches);
+    if (!watches.isEmpty())
+        m_watcher->addPaths(watches);
+
     return currFolder;
 }
 
