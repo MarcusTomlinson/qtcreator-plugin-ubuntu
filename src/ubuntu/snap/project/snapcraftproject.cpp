@@ -67,7 +67,7 @@ SnapcraftProject::SnapcraftProject(SnapcraftProjectManager *manager, const Utils
     ProjectExplorer::FileNode *projectFileNode = new ProjectExplorer::FileNode(fileName, ProjectExplorer::ProjectFileType, false);
     m_rootNode->addFileNodes({projectFileNode});
 
-    connect(m_file, &SnapcraftProjectFile::changed, this, &SnapcraftProject::asyncUpdate);
+    connect(m_file.data(), &SnapcraftProjectFile::changed, this, &SnapcraftProject::asyncUpdate);
 
     //we show magic directories that are not listed in the snapcraft.yaml file, therefore we need to watch the directory
     //if one of those is changed or removed
